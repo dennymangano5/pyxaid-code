@@ -26,24 +26,18 @@ void InputStructure::warning(std::string var, std::string default_value) {
 void InputStructure::init() {
   // Variables are not defined
   is_read_couplings =
-//  is_many_electron_algorithm =
-  is_namdtime = is_sh_algo = is_num_sh_traj =
-  is_boltz_flag = is_debug_flag = is_Temp =
-  is_nucl_dt = is_elec_dt = is_integrator =
-  is_runtype =
-  is_Ham_re_prefix = is_Ham_re_suffix =
-  is_Ham_im_prefix = is_Ham_im_suffix =
-  is_Hprime_x_prefix = is_Hprime_z_prefix = is_Hprime_z_prefix =
-  is_Hprime_x_suffix = is_Hprime_z_suffix = is_Hprime_z_suffix =
-//  is_energy_prefix =
-//  is_energy_suffix = is_nac_re_prefix = is_nac_re_suffix =
-//  is_nac_im_prefix = is_nac_im_suffix =
-  is_energy_in_one_file =
-  is_scratch_dir = is_energy_units = is_alp_bet = is_decoherence =
-  is_regress_mode =
-  is_is_field = is_field_dir = is_field_protocol = is_field_Tm =
-  is_field_T = is_field_freq = is_field_freq_units = is_field_fluence = 0;
-
+      //  is_many_electron_algorithm =
+      is_namdtime = is_sh_algo = is_num_sh_traj = is_boltz_flag = is_debug_flag = is_Temp =
+          is_nucl_dt = is_elec_dt = is_integrator = is_runtype = is_Ham_re_prefix =
+              is_Ham_re_suffix = is_Ham_im_prefix = is_Ham_im_suffix = is_Hprime_x_prefix =
+                  is_Hprime_z_prefix = is_Hprime_z_prefix = is_Hprime_x_suffix =
+                      is_Hprime_z_suffix = is_Hprime_z_suffix =
+                          //  is_energy_prefix =
+      //  is_energy_suffix = is_nac_re_prefix = is_nac_re_suffix =
+      //  is_nac_im_prefix = is_nac_im_suffix =
+      is_energy_in_one_file = is_scratch_dir = is_energy_units = is_alp_bet = is_decoherence =
+          is_regress_mode = is_is_field = is_field_dir = is_field_protocol = is_field_Tm =
+              is_field_T = is_field_freq = is_field_freq_units = is_field_fluence = 0;
 }
 
 void InputStructure::echo() {
@@ -467,7 +461,7 @@ void InputStructure::set_default() {
     }// for i */ // END OLD CONSTRUCTOR
 
 // ── Costruttore: unica funzione che cambia ────────────────────────────────────
-InputStructure::InputStructure(py::dict params){
+InputStructure::InputStructure(py::dict params) {
   init();
 
   // Itera sul dict con range-for di pybind11 (più pulito del loop su keys)
@@ -475,48 +469,123 @@ InputStructure::InputStructure(py::dict params){
     std::string s1 = item.first.cast<std::string>();
 
     // ── Stringhe ─────────────────────────────────────────────────────────────
-         if(s1=="energy_units")      { energy_units      = item.second.cast<std::string>(); is_energy_units      = 1; }
-    else if(s1=="Ham_re_prefix")     { Ham_re_prefix      = item.second.cast<std::string>(); is_Ham_re_prefix      = 1; }
-    else if(s1=="Ham_re_suffix")     { Ham_re_suffix      = item.second.cast<std::string>(); is_Ham_re_suffix      = 1; }
-    else if(s1=="Ham_im_prefix")     { Ham_im_prefix      = item.second.cast<std::string>(); is_Ham_im_prefix      = 1; }
-    else if(s1=="Ham_im_suffix")     { Ham_im_suffix      = item.second.cast<std::string>(); is_Ham_im_suffix      = 1; }
-    else if(s1=="Hprime_x_prefix")   { Hprime_x_prefix    = item.second.cast<std::string>(); is_Hprime_x_prefix    = 1; }
-    else if(s1=="Hprime_y_prefix")   { Hprime_y_prefix    = item.second.cast<std::string>(); is_Hprime_y_prefix    = 1; }
-    else if(s1=="Hprime_z_prefix")   { Hprime_z_prefix    = item.second.cast<std::string>(); is_Hprime_z_prefix    = 1; }
-    else if(s1=="Hprime_x_suffix")   { Hprime_x_suffix    = item.second.cast<std::string>(); is_Hprime_x_suffix    = 1; }
-    else if(s1=="Hprime_y_suffix")   { Hprime_y_suffix    = item.second.cast<std::string>(); is_Hprime_y_suffix    = 1; }
-    else if(s1=="Hprime_z_suffix")   { Hprime_z_suffix    = item.second.cast<std::string>(); is_Hprime_z_suffix    = 1; }
-    else if(s1=="energy_in_one_file"){ energy_in_one_file = item.second.cast<std::string>(); is_energy_in_one_file = 1; }
-    else if(s1=="scratch_dir")       { scratch_dir        = item.second.cast<std::string>(); is_scratch_dir        = 1; }
-    else if(s1=="read_couplings")    { read_couplings     = item.second.cast<std::string>(); is_read_couplings     = 1; }
-    else if(s1=="read_overlaps")     { read_overlaps      = item.second.cast<std::string>(); is_read_overlaps      = 1; }
-    else if(s1=="runtype")           { runtype            = item.second.cast<std::string>(); is_runtype            = 1; }
-    else if(s1=="field_dir")         { field_dir          = item.second.cast<std::string>(); is_field_dir          = 1; }
-    else if(s1=="field_freq_units")  { field_freq_units   = item.second.cast<std::string>(); is_field_freq_units   = 1; }
+    if (s1 == "energy_units") {
+      energy_units = item.second.cast<std::string>();
+      is_energy_units = 1;
+    } else if (s1 == "Ham_re_prefix") {
+      Ham_re_prefix = item.second.cast<std::string>();
+      is_Ham_re_prefix = 1;
+    } else if (s1 == "Ham_re_suffix") {
+      Ham_re_suffix = item.second.cast<std::string>();
+      is_Ham_re_suffix = 1;
+    } else if (s1 == "Ham_im_prefix") {
+      Ham_im_prefix = item.second.cast<std::string>();
+      is_Ham_im_prefix = 1;
+    } else if (s1 == "Ham_im_suffix") {
+      Ham_im_suffix = item.second.cast<std::string>();
+      is_Ham_im_suffix = 1;
+    } else if (s1 == "Hprime_x_prefix") {
+      Hprime_x_prefix = item.second.cast<std::string>();
+      is_Hprime_x_prefix = 1;
+    } else if (s1 == "Hprime_y_prefix") {
+      Hprime_y_prefix = item.second.cast<std::string>();
+      is_Hprime_y_prefix = 1;
+    } else if (s1 == "Hprime_z_prefix") {
+      Hprime_z_prefix = item.second.cast<std::string>();
+      is_Hprime_z_prefix = 1;
+    } else if (s1 == "Hprime_x_suffix") {
+      Hprime_x_suffix = item.second.cast<std::string>();
+      is_Hprime_x_suffix = 1;
+    } else if (s1 == "Hprime_y_suffix") {
+      Hprime_y_suffix = item.second.cast<std::string>();
+      is_Hprime_y_suffix = 1;
+    } else if (s1 == "Hprime_z_suffix") {
+      Hprime_z_suffix = item.second.cast<std::string>();
+      is_Hprime_z_suffix = 1;
+    } else if (s1 == "energy_in_one_file") {
+      energy_in_one_file = item.second.cast<std::string>();
+      is_energy_in_one_file = 1;
+    } else if (s1 == "scratch_dir") {
+      scratch_dir = item.second.cast<std::string>();
+      is_scratch_dir = 1;
+    } else if (s1 == "read_couplings") {
+      read_couplings = item.second.cast<std::string>();
+      is_read_couplings = 1;
+    } else if (s1 == "read_overlaps") {
+      read_overlaps = item.second.cast<std::string>();
+      is_read_overlaps = 1;
+    } else if (s1 == "runtype") {
+      runtype = item.second.cast<std::string>();
+      is_runtype = 1;
+    } else if (s1 == "field_dir") {
+      field_dir = item.second.cast<std::string>();
+      is_field_dir = 1;
+    } else if (s1 == "field_freq_units") {
+      field_freq_units = item.second.cast<std::string>();
+      is_field_freq_units = 1;
+    }
 
     // ── Interi ───────────────────────────────────────────────────────────────
-    else if(s1=="namdtime")       { namdtime       = item.second.cast<int>(); is_namdtime       = 1; }
-    else if(s1=="sh_algo")        { sh_algo         = item.second.cast<int>(); is_sh_algo         = 1; }
-    else if(s1=="num_sh_traj")    { num_sh_traj     = item.second.cast<int>(); is_num_sh_traj     = 1; }
-    else if(s1=="boltz_flag")     { boltz_flag      = item.second.cast<int>(); is_boltz_flag      = 1; }
-    else if(s1=="debug_flag")     { debug_flag      = item.second.cast<int>(); is_debug_flag      = 1; }
-    else if(s1=="integrator")     { integrator      = item.second.cast<int>(); is_integrator      = 1; }
-    else if(s1=="alp_bet")        { alp_bet         = item.second.cast<int>(); is_alp_bet         = 1; }
-    else if(s1=="decoherence")    { decoherence     = item.second.cast<int>(); is_decoherence     = 1; }
-    else if(s1=="regress_mode")   { regress_mode    = item.second.cast<int>(); is_regress_mode    = 1; }
-    else if(s1=="is_field")       { is_field        = item.second.cast<int>(); is_is_field        = 1; }
-    else if(s1=="field_protocol") { field_protocol  = item.second.cast<int>(); is_field_protocol  = 1; }
+    else if (s1 == "namdtime") {
+      namdtime = item.second.cast<int>();
+      is_namdtime = 1;
+    } else if (s1 == "sh_algo") {
+      sh_algo = item.second.cast<int>();
+      is_sh_algo = 1;
+    } else if (s1 == "num_sh_traj") {
+      num_sh_traj = item.second.cast<int>();
+      is_num_sh_traj = 1;
+    } else if (s1 == "boltz_flag") {
+      boltz_flag = item.second.cast<int>();
+      is_boltz_flag = 1;
+    } else if (s1 == "debug_flag") {
+      debug_flag = item.second.cast<int>();
+      is_debug_flag = 1;
+    } else if (s1 == "integrator") {
+      integrator = item.second.cast<int>();
+      is_integrator = 1;
+    } else if (s1 == "alp_bet") {
+      alp_bet = item.second.cast<int>();
+      is_alp_bet = 1;
+    } else if (s1 == "decoherence") {
+      decoherence = item.second.cast<int>();
+      is_decoherence = 1;
+    } else if (s1 == "regress_mode") {
+      regress_mode = item.second.cast<int>();
+      is_regress_mode = 1;
+    } else if (s1 == "is_field") {
+      is_field = item.second.cast<int>();
+      is_is_field = 1;
+    } else if (s1 == "field_protocol") {
+      field_protocol = item.second.cast<int>();
+      is_field_protocol = 1;
+    }
 
     // ── Double ───────────────────────────────────────────────────────────────
-    else if(s1=="Temp")         { Temp         = item.second.cast<double>(); is_Temp         = 1; }
-    else if(s1=="nucl_dt")      { nucl_dt      = item.second.cast<double>(); is_nucl_dt      = 1; }
-    else if(s1=="elec_dt")      { elec_dt      = item.second.cast<double>(); is_elec_dt      = 1; }
-    else if(s1=="field_Tm")     { field_Tm     = item.second.cast<double>(); is_field_Tm     = 1; }
-    else if(s1=="field_T")      { field_T      = item.second.cast<double>(); is_field_T      = 1; }
-    else if(s1=="field_freq")   { field_freq   = item.second.cast<double>(); is_field_freq   = 1; }
-    else if(s1=="field_fluence"){ field_fluence = item.second.cast<double>(); is_field_fluence = 1; }
+    else if (s1 == "Temp") {
+      Temp = item.second.cast<double>();
+      is_Temp = 1;
+    } else if (s1 == "nucl_dt") {
+      nucl_dt = item.second.cast<double>();
+      is_nucl_dt = 1;
+    } else if (s1 == "elec_dt") {
+      elec_dt = item.second.cast<double>();
+      is_elec_dt = 1;
+    } else if (s1 == "field_Tm") {
+      field_Tm = item.second.cast<double>();
+      is_field_Tm = 1;
+    } else if (s1 == "field_T") {
+      field_T = item.second.cast<double>();
+      is_field_T = 1;
+    } else if (s1 == "field_freq") {
+      field_freq = item.second.cast<double>();
+      is_field_freq = 1;
+    } else if (s1 == "field_fluence") {
+      field_fluence = item.second.cast<double>();
+      is_field_fluence = 1;
+    }
 
-  }// for item
+  }  // for item
 
   echo();
   set_default();
@@ -525,31 +594,38 @@ InputStructure::InputStructure(py::dict params){
 
 void InputStructure::sanity_check() {
   // Regression mode
-  if(regress_mode==0 || regress_mode==1){ ;; }
-  else{
-    cout<<"Error: regress_mode = "<<regress_mode<<" is not known\n";
-    cout<<"Allowed values are:\n";
-    cout<<"        0    -  y(t) = a + b*t, with a = 0 and b being fitting parameter\n";
-    cout<<"        1    -  y(t) = a + b*t, with both a and b being fitting parameters\n";
-    cout<<"Exiting...\n";
+  if (regress_mode == 0 || regress_mode == 1) {
+    ;
+    ;
+  } else {
+    cout << "Error: regress_mode = " << regress_mode << " is not known\n";
+    cout << "Allowed values are:\n";
+    cout << "        0    -  y(t) = a + b*t, with a = 0 and b being fitting parameter\n";
+    cout << "        1    -  y(t) = a + b*t, with both a and b being fitting parameters\n";
+    cout << "Exiting...\n";
     exit(0);
   }
 
   // File reading-related options
-  if(read_couplings=="online" || read_couplings=="batch" ||
-     read_couplings=="online_all_in_one" || read_couplings=="batch_all_in_one"){ ;; }
-  else{
-    cout<<"Error: read_couplings = "<<read_couplings<<" is not known\n";
-    cout<<"Allowed values are:\n";
-    cout<<"     online   -   read only those files that are needed for each given initial condition"
-        <<" at the time the NA-MD with this initial condition is to be computed\n";
-    cout<<"     batch    -   read all the files, needed for all initial conditions presented\n";
-    cout<<"     online_all_in_one -  same as online, but real and imaginary parts of Hamiltonian are"
-        <<" extracted from the same file\n";
-    cout<<"     batch_all_in_one -  same as batch, but real and imaginary parts of Hamiltonian are"
-        <<" extracted from the same file\n";
+  if (read_couplings == "online" || read_couplings == "batch" ||
+      read_couplings == "online_all_in_one" || read_couplings == "batch_all_in_one") {
+    ;
+    ;
+  } else {
+    cout << "Error: read_couplings = " << read_couplings << " is not known\n";
+    cout << "Allowed values are:\n";
+    cout << "     online   -   read only those files that are needed for each given initial "
+            "condition"
+         << " at the time the NA-MD with this initial condition is to be computed\n";
+    cout << "     batch    -   read all the files, needed for all initial conditions presented\n";
+    cout << "     online_all_in_one -  same as online, but real and imaginary parts of Hamiltonian "
+            "are"
+         << " extracted from the same file\n";
+    cout
+        << "     batch_all_in_one -  same as batch, but real and imaginary parts of Hamiltonian are"
+        << " extracted from the same file\n";
 
-    cout<<"Exiting...\n";
+    cout << "Exiting...\n";
     exit(0);
   }
 
@@ -588,14 +664,15 @@ void InputStructure::sanity_check() {
       cout << "Error: Field is not yet implemented with decoherence\nExiting...\n";
       exit(0);
     }
-    if(is_field_dir){
-      if(field_dir=="x"||field_dir=="y"||field_dir=="z"||
-         field_dir=="xy"||field_dir=="xz"||field_dir=="yz"||field_dir=="xyz"
-        ){ ;; }
-      else{
-        cout<<"Error: field_dir = "<<field_dir<<" is not known\n";
-        cout<<"Allowed values are: \"x\", \"y\", \"z\", \"xy\", \"xz\", \"yz\", \"xyz\" \n";
-        cout<<"Exiting...\n";
+    if (is_field_dir) {
+      if (field_dir == "x" || field_dir == "y" || field_dir == "z" || field_dir == "xy" ||
+          field_dir == "xz" || field_dir == "yz" || field_dir == "xyz") {
+        ;
+        ;
+      } else {
+        cout << "Error: field_dir = " << field_dir << " is not known\n";
+        cout << "Allowed values are: \"x\", \"y\", \"z\", \"xy\", \"xz\", \"yz\", \"xyz\" \n";
+        cout << "Exiting...\n";
         exit(0);
       }
     } else {
@@ -603,22 +680,23 @@ void InputStructure::sanity_check() {
       exit(0);
     }
 
-    if(is_field_protocol){
-      if(field_protocol==1|| field_protocol==2 || field_protocol==3){ ;; }
-      else{
-        cout<<"Error: field_protocol = "<<field_protocol<<" is not known\n";
-        cout<<"Allowed values are:\n";
-        cout<<"   1  -  for step function modulation protocol\n";
-        cout<<"   2  -  for saw-tooth modulation protocol\n";
-        cout<<"   3  -  for constant amplitude (given by fluence value)\n";
-        cout<<"Exiting...\n";
+    if (is_field_protocol) {
+      if (field_protocol == 1 || field_protocol == 2 || field_protocol == 3) {
+        ;
+        ;
+      } else {
+        cout << "Error: field_protocol = " << field_protocol << " is not known\n";
+        cout << "Allowed values are:\n";
+        cout << "   1  -  for step function modulation protocol\n";
+        cout << "   2  -  for saw-tooth modulation protocol\n";
+        cout << "   3  -  for constant amplitude (given by fluence value)\n";
+        cout << "Exiting...\n";
         exit(0);
       }
     } else {
       cout << "Error: field_protocol must be specified\nExiting...\n";
       exit(0);
     }
-
 
     // Check 1 - adjust T
     if (is_field_T && is_field_freq && is_field_freq_units) {
@@ -648,16 +726,16 @@ void InputStructure::sanity_check() {
 
       if (is_field_protocol && is_field_Tm) {
         // Care in this case, because if tg(omega*Tm) == 1 the amplitude must be infinitely large
-        if(field_protocol==2){
-          if(tan(omega*field_Tm)==1){
-            cout<<"Error: field_Tm results in singular vector potential.\n";
-            cout<<"Choose another value of field_Tm. Exiting...\n";
+        if (field_protocol == 2) {
+          if (tan(omega * field_Tm) == 1) {
+            cout << "Error: field_Tm results in singular vector potential.\n";
+            cout << "Choose another value of field_Tm. Exiting...\n";
             exit(0);
           }
 
-        }// protocol==2
+        }  // protocol==2
       }
-    }// Check 1
+    }  // Check 1
 
   }  // is_field
 }

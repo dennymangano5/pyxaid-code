@@ -219,12 +219,14 @@ void ElectronicStructure::update_hop_prob_fssh(
         }
 
         //------------------- Boltzmann factor -------------------
-        double E_i = Heff->M[i*num_states+i].real();
-        double E_j = Heff->M[j*num_states+j].real();
+        double E_i = Heff->M[i * num_states + i].real();
+        double E_j = Heff->M[j * num_states + j].real();
         double dE = (E_j - E_i);
         double bf = 1.0;
-        if(dE>Eex){  bf= exp(-((dE-Eex)/(kb*Temp))); }  // hop to higher energy state is difficult - thermal equilibrium
-                                                        // no such scaling for Hij_field - it is non-equilibrium process
+        if (dE > Eex) {
+          bf = exp(-((dE - Eex) / (kb * Temp)));
+        }  // hop to higher energy state is difficult - thermal equilibrium
+           // no such scaling for Hij_field - it is non-equilibrium process
 
         //------------------- Together ---------------------------
         g[i * num_states + j] *= bf;
