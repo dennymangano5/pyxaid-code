@@ -52,9 +52,11 @@ void ElectronicStructure::project_out(int i) {
     }
   }
   nrm = sqrt(nrm);
-  for (j = 0; j < num_states; j++) {
+  for (int j = 0; j < num_states; j++) {
     Ccurr->M[j] /= nrm;
   }
+
+  update_populations();
 
   update_populations();
 }
@@ -109,14 +111,14 @@ void ElectronicStructure::check_decoherence(double dt, int boltz_flag, double Te
   }    // for i
 
   // Advancing time
-  for (i = 0; i < num_states; i++) {
+  for (int i = 0; i < num_states; i++) {
     t_m[i] += dt;
   }
 }
 
 void ElectronicStructure::update_hop_prob(double dt, int boltz_flag, double Temp, matrix& Ef) {
   /*******************************************************
- (Re-)Calculate hopping probabilities from given state 
+ (Re-)Calculate hopping probabilities from given state
 *******************************************************/
   update_populations();
 
@@ -217,14 +219,12 @@ void ElectronicStructure::update_hop_prob_fssh(
         }
 
         //------------------- Boltzmann factor -------------------
-        double E_i = Heff->M[i * num_states + i].real();
-        double E_j = Heff->M[j * num_states + j].real();
+        double E_i = Heff->M[i*num_states+i].real();
+        double E_j = Heff->M[j*num_states+j].real();
         double dE = (E_j - E_i);
         double bf = 1.0;
-        if (dE > Eex) {
-          bf = exp(-((dE - Eex) / (kb * Temp)));
-        }  // hop to higher energy state is difficult - thermal equilibrium
-           // no such scaling for Hij_field - it is non-equilibrium process
+        if(dE>Eex){  bf= exp(-((dE-Eex)/(kb*Temp))); }  // hop to higher energy state is difficult - thermal equilibrium
+                                                        // no such scaling for Hij_field - it is non-equilibrium process
 
         //------------------- Together ---------------------------
         g[i * num_states + j] *= bf;
@@ -339,14 +339,6 @@ void ElectronicStructure::update_hop_prob_gfsh(
               0.0) {  // since norm is negative, than this condition means that a_dot[i] and a_dot[j] have same signs
             // which is bad - so no transitions are assigned
             g[i * num_states + j] = 0.0;
-          } else {  // here we have opposite signs of a_dot[i] and a_dot[j], but this is not enough yet
-            if (a_dot[i]<0.0 & a_dot[j]> 0.0) {
-              ;
-              ;
-            }  // this is out transition probability, but it is already computed
-            else {
-              g[i * num_states + j] = 0.0;
-            }  // wrong transition
           }
         }  // a[i]>1e-12
 
@@ -361,6 +353,9 @@ void ElectronicStructure::update_hop_prob_gfsh(
           bf = exp(-((dE - Eex) / (kb * Temp)));
         }  // hop to higher energy state is difficult - thermal equilibrium
            // no such scaling for Hij_field - it is non-equilibrium process
+
+        //------------------- Together ---------------------------
+        g[i * num_states + j] *= bf;
 
         //------------------- Together ---------------------------
         g[i * num_states + j] *= bf;
@@ -423,7 +418,7 @@ void ElectronicStructure::rot(complex<double> Hij, double dt, int i, int j) {
   Action of operator: exp(iL_ij*dt) = exp(-(i/hbar)*dt*(H_ij*c_j*d/dc_i + H_ji*c_i*d/dc_j)):
 
   exp(iL_ij*dt) = A * B * A, where
- 
+
   A = exp(iL_ij^-), phi = (dt/2) * Im(H_ij)/hbar
   B = exp(iL_ij^+), phi =  dt * -Re(H_ij)/hbar
 
@@ -550,7 +545,7 @@ void ElectronicStructure::propagate_coefficients1(double dt, int opt, matrix& Ef
 void ElectronicStructure::propagate_coefficients2(double dt, matrix& Ef) {
   /*************************************************************
   This is basically exact solution of linear ODE system
-  i*hbar*dC/dt = H * C 
+  i*hbar*dC/dt = H * C
   C(dt) = exp(-i*dt*H/hbar) * C(0)
 *************************************************************/
   double tol = 1e-12;

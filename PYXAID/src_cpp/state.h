@@ -17,16 +17,21 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>
+//using namespace boost::python;
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>          // conversione automatica vector, map, ecc.
+namespace py = pybind11;
+
 using namespace std;
 
 int ext2int(int, vector<int>&);
 int delta(vector<int>& A, vector<int>& B, int& a, int& b);
 
-class me_state {
-  // Multi-electron state
-  // Basically it is a Slater product
+
+class me_state{
+// Multi-electron state
+// Basically it is a Slater product
 
 public:
   std::string name;  // label of the determinant
@@ -53,11 +58,7 @@ public:
   }
 
   // Basically the constructor
-  void set_me_state(vector<int>& as_, vector<int>& cs_) {
-    active_space = as_;
-    actual_state = cs_;
-    Exc = 0.0;
-  }
+  void set_me_state(vector<int>& as_,vector<int>& cs_){ active_space = as_; actual_state = cs_; Exc = 0.0;}
 
   // Destructor
   ~me_state() {
@@ -70,7 +71,10 @@ public:
   void show_state();
 };
 
-void input_iconds(boost::python::dict params, int me_numstates, vector<vector<int> >& icond);
-void input_states(boost::python::dict params, vector<me_state>& states);
+//void input_iconds(boost::python::dict params,int me_numstates,vector<vector<int> >& icond); //OLD
+//void input_states(boost::python::dict params,vector<me_state>& states);   //OLD
 
-#endif  // state_h
+void input_iconds(py::dict params,int me_numstates,vector<vector<int> >& icond);
+void input_states(py::dict params,vector<me_state>& states);
+
+#endif // state_h

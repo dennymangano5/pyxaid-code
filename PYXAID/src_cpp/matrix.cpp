@@ -16,10 +16,8 @@ matrix::matrix(vector<vector<double> >& re_part, vector<vector<double> >& im_par
   /*****************************************************************
   Constructor: creates a matrix from 2 2D-arrays - real and imaginary parts
 *****************************************************************/
-  if (re_part.size() != im_part.size()) {
-    cout << "Error in matrix constructor: y-dimensions(num of rows) of the real and imaginary "
-            "arrays are not equal\n";
-    exit(0);
+  if(re_part.size()!=im_part.size()){
+    cout<<"Error in matrix constructor: y-dimensions(num of rows) of the real and imaginary arrays are not equal\n"; exit(0);
   }
   if (re_part[0].size() != im_part[0].size()) {
     cout << "Error in matrix constructor: x-dimensions(num of cols) of the real and imaginary "
@@ -32,12 +30,12 @@ matrix::matrix(vector<vector<double> >& re_part, vector<vector<double> >& im_par
 
   M = new complex<double>[n_elts];
   int n = 0;
-  for (int i = 0; i < n_rows; i++) {
-    for (int j = 0; j < n_cols; j++) {
-      M[n] = complex<double>(re_part[i][j], im_part[i][j]);
-      n++;
+  for(int i=0;i<n_rows;i++){
+    for(int j=0;j<n_cols;j++){
+      M[n] = complex<double>(re_part[i][j],im_part[i][j]); n++;
     }
   }
+
 }
 
 matrix::matrix(const matrix& obj) {
@@ -61,22 +59,23 @@ matrix matrix::operator-() {
   return tmp;
 }
 
-matrix matrix::operator*(const matrix& ob) {
-  // (n_rows x ob.n_cols) = (n_rows x n_cols) * (ob.n_rows * ob.n_cols)
-  // n_cols must be equal to ob.n_rows
-  if (n_cols != ob.n_rows) {
-    std::cout << "Matrix multiplication error: Dimensions of operands must match\n";
-    std::cout << "You try to muplitpy matrix " << n_rows << " by " << n_cols << " and the matrix "
-              << ob.n_rows << " by " << ob.n_cols << "\n";
-    std::cout << "Exiting...\n";
+matrix matrix::operator*(const matrix& ob){
+// (n_rows x ob.n_cols) = (n_rows x n_cols) * (ob.n_rows * ob.n_cols)
+// n_cols must be equal to ob.n_rows
+  if(n_cols!=ob.n_rows){
+    std::cout<<"Matrix multiplication error: Dimensions of operands must match\n";
+    std::cout<<"You try to muplitpy matrix "<<n_rows<<" by "<<n_cols<<" and the matrix "
+             <<ob.n_rows<<" by "<<ob.n_cols<<"\n";
+    std::cout<<"Exiting...\n";
     exit(0);
-  } else {
-    int n = ob.n_cols;
-    int kn;      // k*n
-    int rn;      // row*n
-    int rncols;  // row*n_cols
+  }
+  else{
+    int n=ob.n_cols;
+    int kn; // k*n
+    int rn; // row*n
+    int rncols; // row*n_cols
 
-    matrix Temp(n_rows, n);
+    matrix Temp(n_rows,n);
 
     rn = 0;
     rncols = 0;
@@ -103,11 +102,9 @@ matrix matrix::operator*(const matrix& ob) {
   }
 }
 
-matrix matrix::operator+(const matrix& ob) {
-  matrix Temp(n_rows, n_cols);
-  for (int i = 0; i < n_elts; i++) {
-    Temp.M[i] = M[i] + ob.M[i];
-  }
+matrix matrix::operator+(const matrix& ob){
+  matrix Temp(n_rows,n_cols);
+  for(int i=0;i<n_elts;i++) {Temp.M[i]=M[i]+ob.M[i];}
   return Temp;
 }
 
@@ -143,17 +140,19 @@ void matrix::operator*=(const complex<double>& f) {
   }
 }
 
-void matrix::operator*=(const matrix& ob) {
-  // (n_rows x ob.n_cols) = (n_rows x n_cols) * (ob.n_rows * ob.n_cols)
-  // n_cols must be equal to ob.n_rows
-  if (n_cols != ob.n_rows) {
-    std::cout << "Matrix multiplication error: Dimensions of operands must match\n";
-    std::cout << "You try to muplitpy matrix " << n_rows << " by " << n_cols << " and the matrix "
-              << ob.n_rows << " by " << ob.n_cols << "\n";
-    std::cout << "Exiting...\n";
+
+void matrix::operator*=(const matrix& ob){
+// (n_rows x ob.n_cols) = (n_rows x n_cols) * (ob.n_rows * ob.n_cols)
+// n_cols must be equal to ob.n_rows
+  if(n_cols!=ob.n_rows){
+    std::cout<<"Matrix multiplication error: Dimensions of operands must match\n";
+    std::cout<<"You try to muplitpy matrix "<<n_rows<<" by "<<n_cols<<" and the matrix "
+             <<ob.n_rows<<" by "<<ob.n_cols<<"\n";
+    std::cout<<"Exiting...\n";
     exit(0);
-  } else {
-    int n = ob.n_cols;
+  }
+  else{
+    int n=ob.n_cols;
     // Counters
     int rncols;  // row*n_cols
     int kn;      // k*n
@@ -185,13 +184,13 @@ void matrix::operator*=(const matrix& ob) {
 
     delete[] TM;
   }
+
 }
 
-matrix matrix::operator/(double num) {
-  matrix m(n_rows, n_cols);
-  for (int i = 0; i < n_elts; i++) {
-    m.M[i] = M[i] / num;
-  }
+
+matrix matrix::operator/(double num){
+  matrix m(n_rows,n_cols);
+  for(int i=0;i<n_elts;i++){  m.M[i] = M[i]/num;  }
   return m;
 }
 
@@ -221,9 +220,7 @@ matrix& matrix::operator=(const matrix& ob) {
 
   //for(int i=0;i<n_elts;i++){ M[i] = ob.M[i];  }
 
-  memcpy(M,
-         ob.M,
-         sizeof(complex<double>) * n_elts);  // this is slightly more efficient version than above
+  memcpy(M,ob.M,sizeof(complex<double>)*n_elts);  // this is slightly more efficient version than above
 
   return *this;
 
@@ -288,8 +285,8 @@ ostream& operator<<(ostream& strm, matrix ob) {
   }
   return strm;
 }
-istream& operator>>(istream& strm, matrix& ob) {
-  //     Do not defined for general case       !!!
+istream& operator>>(istream& strm,matrix &ob){
+//     Do not defined for general case       !!!
   return strm;
 }
 
@@ -321,13 +318,9 @@ matrix matrix::H() {
   return m;
 }
 
-void matrix::load_identity() {
-  for (int i = 0; i < n_elts; i++) {
-    M[i] = complex<double>(0.0, 0.0);
-  }
-  for (i = 0; i < n_rows; i++) {
-    M[i * n_cols + i] = complex<double>(1.0, 0.0);
-  }
+void matrix::load_identity(){
+  for(int i=0;i<n_elts;i++){ M[i] = complex<double>(0.0,0.0); }
+  for(int i=0;i<n_rows;i++){ M[i*n_cols+i] = complex<double>(1.0,0.0); }
 }
 
 matrix matrix::col(int i) {
@@ -377,44 +370,45 @@ void matrix::inverse(matrix& inv,double EPS,int max_num_iter,int is_cycle,int al
     for(int i=0;i<n_rows;i++){ einv.M[i*n_cols+i] = 1.0/eval.M[i*n_cols+i]; }
 
     inv = evec*einv*(evec.T());
-  }  
+  }
   else{ cout<<"Warning: in matrix::inverse - matrix is not square\n"; }
 }
 */
 
-void matrix::eigen0(
-    matrix& EVAL, matrix& EVECT, double EPS, int max_num_iter, int is_cycle, int alg) {
-  // Description: Jacobi Eigenvalue Solver - only for complex hermitian matrix!
-  // EVECT * EVAL  =  M * EVECT
-  // V = P^T
-  // EVAL = V_M V_{M-1} ... V_0 * M * V_0^T * V_1^T ... V_M^T = Q^T * M * Q
-  // EVECT = Q = V_0^T * V_1^T ... V_M^T
-  // http://coderov.net/vma/140-eigenvalues/862-direct-method-of-rotation.html  <- this is strange, so use
-  // http://en.wikipedia.org/wiki/Jacobi_method_for_complex_Hermitian_matrices
-  // Note: Wikipedia source contains an error: matrix element for m=q and n=p should be changed from
-  // exp(-i*teta1)*cos(teta2) to -i*exp(-i*teta1)*cos(teta2) !!!
-  // Also in formula for tan(phi2) I assumed that the real part of H_{p,q} is used!
 
-  // For Shur decomposition see: http://ndickson.wordpress.com/2011/07/13/jacobi-eigenvalue-algorithm-schur-decomposition-and-wikipedia/
-  // My derivations are:
-  // V = |  c  -s* |
-  //     |  s   c* |
-  // // Case 1:                    // Case 2:
-  // c = 1 + sqrt(1 + a*b)         c = sqrt(b)
-  // -s* = a                       s = conj(sqrt(a))
-  // a = 2.0*Mij/(Mii-Mjj)         a = Mij/norm
-  // b = 2.0*Mji/(Mii-Mjj)         b = Mji/norm, norm =sqrt(|Mij|^2+|Mji|^2)
+void matrix::eigen0(matrix& EVAL, matrix& EVECT,double EPS,int max_num_iter,int is_cycle,int alg) {
+// Description: Jacobi Eigenvalue Solver - only for complex hermitian matrix!
+// EVECT * EVAL  =  M * EVECT
+// V = P^T
+// EVAL = V_M V_{M-1} ... V_0 * M * V_0^T * V_1^T ... V_M^T = Q^T * M * Q
+// EVECT = Q = V_0^T * V_1^T ... V_M^T
+// http://coderov.net/vma/140-eigenvalues/862-direct-method-of-rotation.html  <- this is strange, so use
+// http://en.wikipedia.org/wiki/Jacobi_method_for_complex_Hermitian_matrices
+// Note: Wikipedia source contains an error: matrix element for m=q and n=p should be changed from
+// exp(-i*teta1)*cos(teta2) to -i*exp(-i*teta1)*cos(teta2) !!!
+// Also in formula for tan(phi2) I assumed that the real part of H_{p,q} is used!
 
-  // New parameters:
-  // is_cycle:
-  //       0 - will be using max non-diagonal element
-  //       1 - cyclic order will be used
-  //
-  // alg: - choose algorithm
-  //       0 - Shur decomposition
-  //       1 - Jacobi rotations
+// For Shur decomposition see: http://ndickson.wordpress.com/2011/07/13/jacobi-eigenvalue-algorithm-schur-decomposition-and-wikipedia/
+// My derivations are:
+// V = |  c  -s* |
+//     |  s   c* |
+// // Case 1:                    // Case 2:
+// c = 1 + sqrt(1 + a*b)         c = sqrt(b)
+// -s* = a                       s = conj(sqrt(a))
+// a = 2.0*Mij/(Mii-Mjj)         a = Mij/norm
+// b = 2.0*Mji/(Mii-Mjj)         b = Mji/norm, norm =sqrt(|Mij|^2+|Mji|^2)
 
-  int n = n_rows;  // = n_cols
+// New parameters:
+// is_cycle:
+//       0 - will be using max non-diagonal element
+//       1 - cyclic order will be used
+//
+// alg: - choose algorithm
+//       0 - Shur decomposition
+//       1 - Jacobi rotations
+
+
+  int n = n_rows; // = n_cols
   int row, col, i, j, k, num_iter;
   double val, phi, eps;
 
@@ -438,6 +432,8 @@ void matrix::eigen0(
   }
 */
 
+  row = 0; col = 1;
+
   row = 0;
   col = 1;
 
@@ -446,22 +442,17 @@ void matrix::eigen0(
     num_iter++;
 
     //cout<<"num_iter = "<<num_iter<<"  eps = "<<eps<<endl;
-    if (!is_cycle) {
-      temp.max_nondiagonal(row, col);
-    }
+    if(!is_cycle){  temp.max_nondiagonal(row,col); }
 
-    if (alg == 0) {
-      // Shur rotation
-      complex<double> c, s;
+    if(alg==0){
+    // Shur rotation
+      complex<double> c,s;
       double L;
       // Case 1
-      if (sqrt(norm(temp.M[row * n_cols + col])) <
-          1e+14 * sqrt(norm(temp.M[row * n_cols + row] - temp.M[col * n_cols + col]))) {
-        complex<double> a = 2.0 * temp.M[row * n_cols + col] /
-                            (temp.M[row * n_cols + row] - temp.M[col * n_cols + col]);
-        complex<double> b = 2.0 * temp.M[col * n_cols + row] /
-                            (temp.M[row * n_cols + row] - temp.M[col * n_cols + col]);
-        c = 1.0 + sqrt(1.0 + a * b);
+      if(sqrt(norm(temp.M[row*n_cols+col]))<1e+14*sqrt(norm(temp.M[row*n_cols+row]-temp.M[col*n_cols+col]))){
+        complex<double> a = 2.0*temp.M[row*n_cols+col]/(temp.M[row*n_cols+row]-temp.M[col*n_cols+col]);
+        complex<double> b = 2.0*temp.M[col*n_cols+row]/(temp.M[row*n_cols+row]-temp.M[col*n_cols+col]);
+        c = 1.0 + sqrt(1.0 + a*b);
         s = std::conj(-a);
       }
       // Case 2
@@ -477,64 +468,50 @@ void matrix::eigen0(
       s = s / L;
 
       V.load_identity();
-      V.M[row * n_cols + row] = c;
-      V.M[row * n_cols + col] = std::conj(-s);
-      V.M[col * n_cols + row] = s;
-      V.M[col * n_cols + col] = std::conj(c);
-    }  // Shur decomposition
+      V.M[row*n_cols + row] = c;   V.M[row*n_cols + col] = std::conj(-s);
+      V.M[col*n_cols + row] = s;   V.M[col*n_cols + col] = std::conj(c);
+   }// Shur decomposition
 
-    else if (alg == 1) {
-      // Jacobi rotation
-      double phi1, phi2;
-      phi1 = atan2(temp.M[row * n_cols + col].imag(), temp.M[row * n_cols + col].real());
-      phi2 = atan2(2.0 * temp.M[row * n_cols + col].real(),
-                   (temp.M[row * n_cols + row].real() - temp.M[col * n_cols + col].real()));
-      double tet1, tet2;
-      tet1 = 0.25 * (M_PI - 2.0 * phi1);
-      tet2 = 0.5 * phi2;
+   else if(alg==1){
+     // Jacobi rotation
+     double phi1, phi2;
+     phi1 = atan2(    temp.M[row*n_cols+col].imag(), temp.M[row*n_cols+col].real());
+     phi2 = atan2(2.0*temp.M[row*n_cols+col].real(),(temp.M[row*n_cols+row].real()-temp.M[col*n_cols+col].real()));
+     double tet1,tet2;
+     tet1 = 0.25*(M_PI - 2.0*phi1);
+     tet2 = 0.5*phi2;
 
-      double s1, s2, c1, c2;
-      s1 = sin(tet1);
-      s2 = sin(tet2);
-      c1 = cos(tet1);
-      c2 = cos(tet2);
+     double s1,s2,c1,c2;
+     s1 = sin(tet1); s2 = sin(tet2);
+     c1 = cos(tet1); c2 = cos(tet2);
 
-      V.load_identity();
-      V.M[row * n_cols + row] = complex<double>(-s1 * s2, -c1 * s2);
-      V.M[row * n_cols + col] = complex<double>(s1 * c2, -c1 * c2);
-      V.M[col * n_cols + row] = complex<double>(-s1 * c2, -c1 * c2);
-      V.M[col * n_cols + col] = complex<double>(-s1 * s2, c1 * s2);
+     V.load_identity();
+     V.M[row*n_cols + row] = complex<double>(-s1*s2,-c1*s2);   V.M[row*n_cols + col] = complex<double>(s1*c2,-c1*c2);
+     V.M[col*n_cols + row] = complex<double>(-s1*c2,-c1*c2);   V.M[col*n_cols + col] = complex<double>(-s1*s2,c1*s2);
 
-    }  // Jacobi rotation
+   }// Jacobi rotation
 
     //temp = V*temp*V.H();
-    temp = V * temp * V.H();
+    temp = V*temp*V.H();
 
-    EVECT = EVECT * V.H();
+    EVECT = EVECT*V.H();
 
-    k = 0;
-    eps = 0.0;
-    for (i = 0; i < temp.n_rows; i++) {
-      for (j = 0; j < temp.n_cols; j++) {
-        if (i != j) {
-          eps += norm(temp.M[k]);
-        }
+    k = 0; eps = 0.0;
+    for(i=0;i<temp.n_rows;i++){
+      for(j=0;j<temp.n_cols;j++){
+        if(i!=j) {eps+=norm(temp.M[k]); }
         k++;
       }  // for j
     }    // for i
 
     //cout<<"num_iter = "<<num_iter<<" eps = " <<eps<<endl;
 
-    if (is_cycle) {
-      if (row < (n - 2) && col < (n - 1)) {
-        col++;
-      } else if (row < (n - 2) && col == (n - 1)) {
-        row++;
-        col = row + 1;
-      } else if (row == (n - 2) && col == (n - 1)) {
-        row = 0;
-        col = 1;
-      }
+
+
+    if(is_cycle){
+      if(row<(n-2) && col<(n-1)) { col++; }
+      else if(row<(n-2) && col==(n-1)) { row++; col = row + 1;}
+      else if(row==(n-2) && col==(n-1)){ row = 0; col = 1; }
     }
 
     //  }// while eps>EPS
@@ -575,11 +552,12 @@ void matrix::QR(matrix& w, matrix& R) {
   for (i = 0; i < n; i++) {
     if (i > 0) {
       // w_k = w_k - (w_k,w_i)*w_i  k = i, i+1, ... n
-      for (k = i; k < n; k++) {
-        dot = complex<double>(0.0, 0.0);
-        for (j = 0; j < n; j++) {
-          dot = dot + (std::conj(w.M[j * n + k]) * w.M[j * n + (i - 1)]);
-        }  // for j
+      for(k=i;k<n;k++){
+
+        dot = complex<double>(0.0,0.0);
+        for(j=0;j<n;j++){ dot = dot + (std::conj(w.M[j*n+k])*w.M[j*n+(i-1)]); }// for j
+
+        dot = std::conj(dot); // This is very tricky part!!!  - arises in case of complex matrixes
 
         dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
 
@@ -589,6 +567,7 @@ void matrix::QR(matrix& w, matrix& R) {
 
       }  // for k
     }    // i > 0
+
 
     // Simply normalize i-th column-vector
     nrm = 0.0;
@@ -603,10 +582,10 @@ void matrix::QR(matrix& w, matrix& R) {
   }  // for i
 
   // Now for R-matrix
-  R = complex<double>(0.0, 0.0);
-  for (i = 0; i < n; i++) {
-    for (j = i; j < n; j++) {
-      for (k = 0; k < n; k++) {
+  R = complex<double>(0.0,0.0);
+  for(i=0;i<n;i++){
+    for(j=i;j<n;j++){
+      for(k=0;k<n;k++){
         // R[i][j] = w_j * u_i, note w - is actually original matrix M, while u is what is now w.
         // Note: For complex (this) case the actual definition of the R[i][j] coefficients is:
         // R[j][i] = (w_j^*  x  u_i)^* = w_j * u_i^*, where ^* - denotes complex conjugation
@@ -642,9 +621,9 @@ void matrix::QR1(matrix& w, matrix& R) {
       for (k = i; k <= min((n - 1), (i + 1)); k++) {
         dot = complex<double>(0.0, 0.0);
         // k = i, i+1 - two or 1 term in dot product computations
-        for (j = 0; j <= min((i + 2), (n - 1)); j++) {
-          dot += (std::conj(w.M[j * n + k]) * w.M[j * n + (i - 1)]);
-        }
+        for(j=0;j<=min((i+2),(n-1));j++){ dot += (std::conj(w.M[j*n+k])*w.M[j*n+(i-1)]); }
+
+        dot = std::conj(dot); // This is very tricky part!!!  - arises in case of complex matrixes
 
         dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
 
@@ -655,6 +634,7 @@ void matrix::QR1(matrix& w, matrix& R) {
 
       }  // for k
     }    // i > 0
+
 
     // Simply normalize i-th column-vector
     nrm = 0.0;
@@ -669,10 +649,10 @@ void matrix::QR1(matrix& w, matrix& R) {
   }  // for i
 
   // Now for R-matrix
-  R = complex<double>(0.0, 0.0);
-  for (i = 0; i < n; i++) {
-    for (j = i; j <= min(n - 1, i + 2); j++) {
-      for (k = 0; k < n; k++) {
+  R = complex<double>(0.0,0.0);
+  for(i=0;i<n;i++){
+    for(j=i;j<=min(n-1,i+2);j++){
+      for(k=0;k<n;k++){
         // R[i][j] = w_j * u_i, note w - is actually original matrix M, while u is what is now w.
         // Note: For complex (this) case the actual definition of the R[i][j] coefficients is:
         // R[j][i] = (w_j^*  x  u_i)^* = w_j * u_i^*, where ^* - denotes complex conjugation
@@ -694,37 +674,32 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
   int iter = 0;
   int stop = 0;
 
-  do {
-    eval.QR1(Q, R);
+
+  do{
+
+
+    eval.QR1(Q,R);
 
     eval = 0.0;
 
     // The following stepas are basically the efficient way to do:
     // eval = R * Q
     // Fill out the main diagonal
-    for (int i = 0; i < n; i++) {
-      if (i == n - 1) {
-        eval.M[i * n + i] = R.M[i * n + i] * Q.M[i * n + i];
-      }  // only 1 term here
-      else {
-        eval.M[i * n + i] =
-            R.M[i * n + i] * Q.M[i * n + i] + R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + i];
-      }  // in fact just only 2 terms here
+    for(int i=0;i<n;i++){
+      if(i==n-1){  eval.M[i*n+i]  = R.M[i*n+i]*Q.M[i*n+i];   }          // only 1 term here
+      else{        eval.M[i*n+i]  = R.M[i*n+i]*Q.M[i*n+i] + R.M[i*n+(i+1)]*Q.M[(i+1)*n+i];}  // in fact just only 2 terms here
       // Wilkinson shift:
       //eval.M[i*n+i] += mu;
+
     }
     // Fill out upper diagonal
-    for (i = 0; i < n - 1; i++) {
+    for(int i=0;i<n-1;i++){
       // j = i+1
-      if (i == n - 2) {
-        eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
-                                  R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + (i + 1)];
-      }  // only 2 terms here
-      else {
-        eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
-                                  R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + (i + 1)] +
-                                  R.M[i * n + (i + 2)] * Q.M[(i + 2) * n + (i + 1)];
-      }  // all 3 terms
+      if(i==n-2){  eval.M[i*n+(i+1)]  = R.M[i*n+i]*Q.M[i*n+(i+1)] +
+                                        R.M[i*n+(i+1)]*Q.M[(i+1)*n+(i+1)];}   // only 2 terms here
+      else{        eval.M[i*n+(i+1)]  = R.M[i*n+i]*Q.M[i*n+(i+1)] +
+                                        R.M[i*n+(i+1)]*Q.M[(i+1)*n+(i+1)] +
+                                        R.M[i*n+(i+2)]*Q.M[(i+2)*n+(i+1)];}  // all 3 terms
 
       // The lower diagonal - is by hermitian symmetry:
       eval.M[(i + 1) * n + i] =
@@ -734,123 +709,93 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
     // m has a tridiagonal form, so judge convergence by the elements in
     // the closest off-diagonal
     stop = 0;
-    for (i = 0; i < (n - 1); i++) {
-      if ((fabs(eval.M[i * n + (i + 1)].real()) < EPS) &&
-          (fabs(eval.M[i * n + (i + 1)].imag()) < EPS)) {
-        // Element (i, j=i+1) is  "zero"
-        int sz_up = i + 1;
-        int sz_dn = n - i - 1;
+    for(int i=0;i<(n-1);i++){
+      if(  (fabs(eval.M[i*n+(i+1)].real())<EPS) && (fabs(eval.M[i*n+(i+1)].imag())<EPS) ){
 
-        if (sz_up == 1 && sz_dn == 1) {  // Here we just finished 2x2 matrix - done
-          Eval[0] = eval.M[0].real();
-          Eval[1] = eval.M[3].real();
-        } else if (sz_up == 1 && sz_dn > 1) {
-          matrix dn(sz_dn, sz_dn);
-          dn = 0.0;
-          // copy diagonal elements
-          for (int j = i + 1; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
-          }
+         // Element (i, j=i+1) is  "zero"
+         int sz_up = i+1;
+         int sz_dn = n-i-1;
 
-          vector<double> Eval_tmp(sz_dn, 0.0);
-          qr(EPS, sz_dn, dn, Eval_tmp);
+         if(sz_up==1 && sz_dn==1){ // Here we just finished 2x2 matrix - done
+           Eval[0] = eval.M[0].real();
+           Eval[1] = eval.M[3].real();
+         }
+         else if(sz_up==1 && sz_dn>1){
+           matrix dn(sz_dn,sz_dn); dn = 0.0;
+           // copy diagonal elements
+           for(int j=i+1;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=i+1;j<(n-1);j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=i+2;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))-1] = eval.M[j*n+j-1]; }
 
-          Eval[0] = eval.M[0].real();
-          for (j = 1; j < n; j++) {
-            Eval[j] = Eval_tmp[j - 1];
-          }
-          Eval_tmp.clear();
+           vector<double> Eval_tmp(sz_dn,0.0);
+           qr(EPS,sz_dn,dn,Eval_tmp);
 
-        }
+           Eval[0] = eval.M[0].real();
+           for(int j=1;j<n;j++){ Eval[j] = Eval_tmp[j-1]; }
+           Eval_tmp.clear();
 
-        else if (sz_up > 1 && sz_dn == 1) {
-          matrix up(sz_up, sz_up);
-          up = 0.0;
-          // copy diagonal elements
-          for (int j = 0; j < (n - 1); j++) {
-            up.M[j * sz_up + j] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = 0; j < (n - 2); j++) {
-            up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = 1; j < (n - 1); j++) {
-            up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
-          }
+         }
 
-          vector<double> Eval_tmp(sz_up, 0.0);
-          qr(EPS, sz_up, up, Eval_tmp);
+         else if(sz_up>1 && sz_dn==1){
+           matrix up(sz_up,sz_up); up = 0.0;
+           // copy diagonal elements
+           for(int j=0;j<(n-1);j++){ up.M[j*sz_up + j] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=0;j<(n-2);j++){ up.M[j*sz_up + j+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=1;j<(n-1);j++){ up.M[j*sz_up + j-1] = eval.M[j*n+j-1]; }
 
-          for (j = 0; j < (n - 1); j++) {
-            Eval[j] = Eval_tmp[j];
-          }
-          Eval[n - 1] = eval.M[(n - 1) * n + (n - 1)].real();
-          Eval_tmp.clear();
+           vector<double> Eval_tmp(sz_up,0.0);
+           qr(EPS,sz_up,up,Eval_tmp);
 
-        }
 
-        else {
-          // General case - both matrices are at least 2x2
-          matrix dn(sz_dn, sz_dn);
-          dn = 0.0;
-          // copy diagonal elements
-          for (int j = i + 1; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
-          }
+           for(int j=0;j<(n-1);j++){ Eval[j] = Eval_tmp[j]; }
+           Eval[n-1] = eval.M[(n-1)*n+(n-1)].real();
+           Eval_tmp.clear();
 
-          matrix up(sz_up, sz_up);
-          up = 0.0;
-          // copy diagonal elements
-          for (j = 0; j < (i + 1); j++) {
-            up.M[j * sz_up + j] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = 0; j < i; j++) {
-            up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = 1; j < (i + 1); j++) {
-            up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
-          }
+         }
 
-          vector<double> Eval_tmp_up(sz_up, 0.0);
-          qr(EPS, sz_up, up, Eval_tmp_up);
+         else{
+         // General case - both matrices are at least 2x2
+           matrix dn(sz_dn,sz_dn); dn = 0.0;
+           // copy diagonal elements
+           for(int j=i+1;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=i+1;j<(n-1);j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=i+2;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))-1] = eval.M[j*n+j-1]; }
 
-          vector<double> Eval_tmp_dn(sz_dn, 0.0);
-          qr(EPS, sz_dn, dn, Eval_tmp_dn);
+           matrix up(sz_up,sz_up); up = 0.0;
+           // copy diagonal elements
+           for(int j=0;j<(i+1);j++){ up.M[j*sz_up + j] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=0;j<i;j++){ up.M[j*sz_up + j+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=1;j<(i+1);j++){ up.M[j*sz_up + j-1] = eval.M[j*n+j-1]; }
 
-          for (j = 0; j < sz_up; j++) {
-            Eval[j] = Eval_tmp_up[j];
-          }
-          for (j = i + 1; j < n; j++) {
-            Eval[j] = Eval_tmp_dn[j - (i + 1)];
-          }
 
-          Eval_tmp_up.clear();
-          Eval_tmp_dn.clear();
-        }
+           vector<double> Eval_tmp_up(sz_up,0.0);
+           qr(EPS,sz_up,up,Eval_tmp_up);
 
-        stop = 1;
-      }  // if
+           vector<double> Eval_tmp_dn(sz_dn,0.0);
+           qr(EPS,sz_dn,dn,Eval_tmp_dn);
 
-    }  // for i
+           for(int j=0;j<sz_up;j++){ Eval[j] = Eval_tmp_up[j]; }
+           for(int j=i+1;j<n;j++){ Eval[j] = Eval_tmp_dn[j-(i+1)]; }
+
+           Eval_tmp_up.clear();
+           Eval_tmp_dn.clear();
+
+         }
+
+
+
+         stop = 1;
+      }// if
+
+    }// for i
 
     iter++;
   } while (!stop);
@@ -875,7 +820,8 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
 
   Evec.load_identity();
 
-  do {
+  do{
+
     // Perhaps they mean - minimal diagonal value
     a1 = eval.M[0].real();
     i1 = 0;
@@ -915,29 +861,21 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
     // The following steps are basically the efficient way to do:
     // eval = R * Q
     // Fill out the main diagonal
-    for (i = 0; i < n; i++) {
-      if (i == n - 1) {
-        eval.M[i * n + i] = R.M[i * n + i] * Q.M[i * n + i];
-      }  // only 1 term here
-      else {
-        eval.M[i * n + i] =
-            R.M[i * n + i] * Q.M[i * n + i] + R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + i];
-      }  // in fact just only 2 terms here
+    for(int i=0;i<n;i++){
+      if(i==n-1){  eval.M[i*n+i]  = R.M[i*n+i]*Q.M[i*n+i];   }          // only 1 term here
+      else{        eval.M[i*n+i]  = R.M[i*n+i]*Q.M[i*n+i] + R.M[i*n+(i+1)]*Q.M[(i+1)*n+i];}  // in fact just only 2 terms here
       // Shift:
-      eval.M[i * n + i] += mu;
+      eval.M[i*n+i] += mu;
+
     }
     // Fill out upper diagonal
-    for (i = 0; i < n - 1; i++) {
+    for(int i=0;i<n-1;i++){
       // j = i+1
-      if (i == n - 2) {
-        eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
-                                  R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + (i + 1)];
-      }  // only 2 terms here
-      else {
-        eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
-                                  R.M[i * n + (i + 1)] * Q.M[(i + 1) * n + (i + 1)] +
-                                  R.M[i * n + (i + 2)] * Q.M[(i + 2) * n + (i + 1)];
-      }  // all 3 terms
+      if(i==n-2){  eval.M[i*n+(i+1)]  = R.M[i*n+i]*Q.M[i*n+(i+1)] +
+                                        R.M[i*n+(i+1)]*Q.M[(i+1)*n+(i+1)];}   // only 2 terms here
+      else{        eval.M[i*n+(i+1)]  = R.M[i*n+i]*Q.M[i*n+(i+1)] +
+                                        R.M[i*n+(i+1)]*Q.M[(i+1)*n+(i+1)] +
+                                        R.M[i*n+(i+2)]*Q.M[(i+2)*n+(i+1)];}  // all 3 terms
 
       // The lower diagonal - is by hermitian symmetry:
       eval.M[(i + 1) * n + i] =
@@ -947,153 +885,121 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
     // m has a tridiagonal form, so judge convergence by the elements in
     // the closest off-diagonal
     stop = 0;
-    for (i = 0; i < (n - 1); i++) {
-      if ((fabs(eval.M[i * n + (i + 1)].real()) < EPS) &&
-          (fabs(eval.M[i * n + (i + 1)].imag()) < EPS)) {
-        // Element (i, j=i+1) is  "zero"
-        int sz_up = i + 1;
-        int sz_dn = n - i - 1;
+    for(int i=0;i<(n-1);i++){
+      if(  (fabs(eval.M[i*n+(i+1)].real())<EPS) && (fabs(eval.M[i*n+(i+1)].imag())<EPS) ){
 
-        if (sz_up == 1 && sz_dn == 1) {  // Here we just finished 2x2 matrix - done
-          Eval[0] = eval.M[0].real();
-          Eval[1] = eval.M[3].real();
-        } else if (sz_up == 1 && sz_dn > 1) {
-          matrix dn(sz_dn, sz_dn);
-          dn = 0.0;
-          // copy diagonal elements
-          for (int j = i + 1; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
-          }
+         // Element (i, j=i+1) is  "zero"
+         int sz_up = i+1;
+         int sz_dn = n-i-1;
 
-          vector<double> Eval_tmp(sz_dn, 0.0);
-          matrix Q_dn(sz_dn, sz_dn);
-          qr(EPS, sz_dn, dn, Eval_tmp, Q_dn);
+         if(sz_up==1 && sz_dn==1){ // Here we just finished 2x2 matrix - done
+           Eval[0] = eval.M[0].real();
+           Eval[1] = eval.M[3].real();
+         }
+         else if(sz_up==1 && sz_dn>1){
+           matrix dn(sz_dn,sz_dn); dn = 0.0;
+           // copy diagonal elements
+           for(int j=i+1;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=i+1;j<(n-1);j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=i+2;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))-1] = eval.M[j*n+j-1]; }
 
-          for (j = i + 1; j < n; j++) {
-            for (int k = i + 1; k < n; k++) {
-              Q_tmp.M[j * n + k] = Q_dn.M[(j - (i + 1)) * sz_dn + (k - (i + 1))];
-            }
-          }
+           vector<double> Eval_tmp(sz_dn,0.0);
+           matrix Q_dn(sz_dn,sz_dn);
+           qr(EPS,sz_dn,dn,Eval_tmp,Q_dn);
 
-          Eval[0] = eval.M[0].real();
-          for (j = 1; j < n; j++) {
-            Eval[j] = Eval_tmp[j - 1];
-          }
-          Eval_tmp.clear();
+           for(int j=i+1;j<n;j++){
+             for(int k=i+1;k<n;k++){
+               Q_tmp.M[j*n+k] = Q_dn.M[(j-(i+1))*sz_dn + (k-(i+1))];
+             }
+           }
 
-        }
+           Eval[0] = eval.M[0].real();
+           for(int j=1;j<n;j++){ Eval[j] = Eval_tmp[j-1]; }
+           Eval_tmp.clear();
 
-        else if (sz_up > 1 && sz_dn == 1) {
-          matrix up(sz_up, sz_up);
-          up = 0.0;
-          // copy diagonal elements
-          for (int j = 0; j < (n - 1); j++) {
-            up.M[j * sz_up + j] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = 0; j < (n - 2); j++) {
-            up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = 1; j < (n - 1); j++) {
-            up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
-          }
+         }
 
-          vector<double> Eval_tmp(sz_up, 0.0);
-          matrix Q_up(sz_up, sz_up);
-          qr(EPS, sz_up, up, Eval_tmp, Q_up);
+         else if(sz_up>1 && sz_dn==1){
+           matrix up(sz_up,sz_up); up = 0.0;
+           // copy diagonal elements
+           for(int j=0;j<(n-1);j++){ up.M[j*sz_up + j] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=0;j<(n-2);j++){ up.M[j*sz_up + j+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=1;j<(n-1);j++){ up.M[j*sz_up + j-1] = eval.M[j*n+j-1]; }
 
-          for (j = 0; j < (i + 1); j++) {
-            for (int k = 0; k < (i + 1); k++) {
-              Q_tmp.M[j * n + k] = Q_up.M[j * sz_up + k];
-            }
-          }
+           vector<double> Eval_tmp(sz_up,0.0);
+           matrix Q_up(sz_up,sz_up);
+           qr(EPS,sz_up,up,Eval_tmp,Q_up);
 
-          for (j = 0; j < (n - 1); j++) {
-            Eval[j] = Eval_tmp[j];
-          }
-          Eval[n - 1] = eval.M[(n - 1) * n + (n - 1)].real();
-          Eval_tmp.clear();
+           for(int j=0;j<(i+1);j++){
+             for(int k=0;k<(i+1);k++){
+               Q_tmp.M[j*n+k] = Q_up.M[j*sz_up+k];
+             }
+           }
 
-        }
+           for(int j=0;j<(n-1);j++){ Eval[j] = Eval_tmp[j]; }
+           Eval[n-1] = eval.M[(n-1)*n+(n-1)].real();
+           Eval_tmp.clear();
 
-        else {
-          // General case - both matrices are at least 2x2
-          matrix dn(sz_dn, sz_dn);
-          dn = 0.0;
-          // copy diagonal elements
-          for (int j = i + 1; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
-            dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
-          }
+         }
 
-          matrix up(sz_up, sz_up);
-          up = 0.0;
-          // copy diagonal elements
-          for (j = 0; j < (i + 1); j++) {
-            up.M[j * sz_up + j] = eval.M[j * n + j];
-          }
-          // upper off-diagonal elements
-          for (j = 0; j < i; j++) {
-            up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
-          }
-          // lower off-diagonal elements
-          for (j = 1; j < (i + 1); j++) {
-            up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
-          }
+         else{
+         // General case - both matrices are at least 2x2
+           matrix dn(sz_dn,sz_dn); dn = 0.0;
+           // copy diagonal elements
+           for(int j=i+1;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=i+1;j<(n-1);j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=i+2;j<n;j++){ dn.M[(j-(i+1))*sz_dn + (j-(i+1))-1] = eval.M[j*n+j-1]; }
 
-          vector<double> Eval_tmp_up(sz_up, 0.0);
-          matrix Q_up(sz_up, sz_up);
-          qr(EPS, sz_up, up, Eval_tmp_up, Q_up);
+           matrix up(sz_up,sz_up); up = 0.0;
+           // copy diagonal elements
+           for(int j=0;j<(i+1);j++){ up.M[j*sz_up + j] = eval.M[j*n+j]; }
+           // upper off-diagonal elements
+           for(int j=0;j<i;j++){ up.M[j*sz_up + j+1] = eval.M[j*n+j+1]; }
+           // lower off-diagonal elements
+           for(int j=1;j<(i+1);j++){ up.M[j*sz_up + j-1] = eval.M[j*n+j-1]; }
 
-          vector<double> Eval_tmp_dn(sz_dn, 0.0);
-          matrix Q_dn(sz_dn, sz_dn);
-          qr(EPS, sz_dn, dn, Eval_tmp_dn, Q_dn);
+           vector<double> Eval_tmp_up(sz_up,0.0);
+           matrix Q_up(sz_up,sz_up);
+           qr(EPS,sz_up,up,Eval_tmp_up,Q_up);
 
-          for (j = 0; j < (i + 1); j++) {
-            for (int k = 0; k < (i + 1); k++) {
-              Q_tmp.M[j * n + k] = Q_up.M[j * sz_up + k];
-            }
-          }
+           vector<double> Eval_tmp_dn(sz_dn,0.0);
+           matrix Q_dn(sz_dn,sz_dn);
+           qr(EPS,sz_dn,dn,Eval_tmp_dn,Q_dn);
 
-          for (j = i + 1; j < n; j++) {
-            for (int k = i + 1; k < n; k++) {
-              Q_tmp.M[j * n + k] = Q_dn.M[(j - (i + 1)) * sz_dn + (k - (i + 1))];
-            }
-          }
 
-          for (j = 0; j < sz_up; j++) {
-            Eval[j] = Eval_tmp_up[j];
-          }
-          for (j = i + 1; j < n; j++) {
-            Eval[j] = Eval_tmp_dn[j - (i + 1)];
-          }
+           for(int j=0;j<(i+1);j++){
+             for(int k=0;k<(i+1);k++){
+               Q_tmp.M[j*n+k] = Q_up.M[j*sz_up+k];
+             }
+           }
 
-          Eval_tmp_up.clear();
-          Eval_tmp_dn.clear();
-        }
+           for(int j=i+1;j<n;j++){
+             for(int k=i+1;k<n;k++){
+               Q_tmp.M[j*n+k] = Q_dn.M[(j-(i+1))*sz_dn + (k-(i+1))];
+             }
+           }
 
-        Evec *= Q_tmp;
 
-        stop = 1;
-      }  // if
+           for(int j=0;j<sz_up;j++){ Eval[j] = Eval_tmp_up[j]; }
+           for(int j=i+1;j<n;j++){ Eval[j] = Eval_tmp_dn[j-(i+1)]; }
 
-    }  // for i
+           Eval_tmp_up.clear();
+           Eval_tmp_dn.clear();
+
+         }
+
+         Evec *= Q_tmp;
+
+         stop = 1;
+      }// if
+
+    }// for i
 
     iter++;
 
@@ -1107,30 +1013,25 @@ void matrix::eigen(double EPS, matrix& EVAL, matrix& EVECT, int opt) {
   vector<double> Eval(n_rows, 0.0);
   EVAL = 0.0;
 
-  if (opt == 1) {
-    eigen0(EVAL, EVECT, EPS, 10000, 0, 0);
-  }  // this works up to ~ n =50
-  else if (opt == 2) {
-    eigen2(EPS, Eval, EVECT);
-    for (int i = 0; i < n_rows; i++) {
-      EVAL.M[i * n_cols + i] = Eval[i];
-    }  // this is fastest version, able to work up to ~n = 250
-  } else if (opt == 3) {
-    eigen3(EPS, Eval, EVECT);
-    for (int i = 0; i < n_rows; i++) {
-      EVAL.M[i * n_cols + i] = Eval[i];
-    }  // this works up to ~n = 200, but is slow
+  if(opt==1){   eigen0(EVAL,EVECT,EPS,10000,0,0);  }  // this works up to ~ n =50
+  else if(opt==2){  eigen2(EPS,Eval,EVECT);
+    for(int i=0;i<n_rows;i++){ EVAL.M[i*n_cols+i] = Eval[i]; } // this is fastest version, able to work up to ~n = 250
   }
+  else if(opt==3){  eigen3(EPS,Eval,EVECT);
+    for(int i=0;i<n_rows;i++){ EVAL.M[i*n_cols+i] = Eval[i]; } // this works up to ~n = 200, but is slow
+  }
+
+
 }
 
-void matrix::eigen1(double EPS, vector<double>& Eval) {
-  //-------------------------------------------------------------
-  // We do the job in reductionist way - once one of the elements on
-  // the off-diagonal is smaller than EPS - we split the matrix into
-  // 2 blocks and then deal with each other independently - deflation
-  //-------------------------------------------------------------
+void matrix::eigen1(double EPS,vector<double>& Eval){
+//-------------------------------------------------------------
+// We do the job in reductionist way - once one of the elements on
+// the off-diagonal is smaller than EPS - we split the matrix into
+// 2 blocks and then deal with each other independently - deflation
+//-------------------------------------------------------------
 
-  int n = n_rows;  // = n_cols
+  int n = n_rows; // = n_cols
 
   matrix Q(n, n);
   matrix R(n, n);
@@ -1152,17 +1053,17 @@ void matrix::eigen1(double EPS, vector<double>& Eval) {
   qr(EPS, n, eval, Eval);
 }
 
-void matrix::eigen2(double EPS, vector<double>& Eval, matrix& Evec) {
-  //-------------------------------------------------------------
-  // This is practically the same version as eigen1, but we also
-  // keep track of the transformation matrixes - so to compute all
-  // eigenvectors
-  // The relation is:
-  // this * Evec = Evec * Eval  or (because Evec.H() * Evec = I)
-  // Eval = Evec.H() * this * Evec
-  //-------------------------------------------------------------
+void matrix::eigen2(double EPS,vector<double>& Eval,matrix& Evec){
+//-------------------------------------------------------------
+// This is practically the same version as eigen1, but we also
+// keep track of the transformation matrixes - so to compute all
+// eigenvectors
+// The relation is:
+// this * Evec = Evec * Eval  or (because Evec.H() * Evec = I)
+// Eval = Evec.H() * this * Evec
+//-------------------------------------------------------------
 
-  int n = n_rows;  // = n_cols
+  int n = n_rows; // = n_cols
 
   Evec.load_identity();
   matrix Q(n, n);
@@ -1186,15 +1087,15 @@ void matrix::eigen2(double EPS, vector<double>& Eval, matrix& Evec) {
   Evec *= Q;
 }
 
-void matrix::eigen3(double EPS, vector<double>& Eval, matrix& Evec) {
-  //-------------------------------------------------------------
-  // This is practically the same version as eigen1, but we also
-  // keep track of the transformation matrixes - so to compute all
-  // eigenvectors
-  // The relation is:
-  // this * Evec = Evec * Eval  or (because Evec.H() * Evec = I)
-  // Eval = Evec.H() * this * Evec
-  //-------------------------------------------------------------
+void matrix::eigen3(double EPS,vector<double>& Eval,matrix& Evec){
+//-------------------------------------------------------------
+// This is practically the same version as eigen1, but we also
+// keep track of the transformation matrixes - so to compute all
+// eigenvectors
+// The relation is:
+// this * Evec = Evec * Eval  or (because Evec.H() * Evec = I)
+// Eval = Evec.H() * this * Evec
+//-------------------------------------------------------------
 
   int n = n_rows;  // = n_cols
 
@@ -1212,28 +1113,20 @@ void matrix::eigen3(double EPS, vector<double>& Eval, matrix& Evec) {
       m.M[j * n + j] -= Eval[i];
     }
     // Initial guess
-    for (j = 0; j < n; j++) {
-      X.M[j] = gs;
-    }
+    for(int j=0;j<n;j++){ X.M[j] = gs; }
 
     solve_linsys1(m, X, EPS, 10000, 1.4);  // ~1.4 is optimum
 
     // Restore original m
-    for (j = 0; j < n; j++) {
-      m.M[j * n + j] += Eval[i];
-    }
+    for(int j=0;j<n;j++){ m.M[j*n+j] += Eval[i]; }
 
     // Compute norm of the solution vector
     double nrm = 0.0;
-    for (j = 0; j < n; j++) {
-      nrm += norm(X.M[j]);
-    }
-    nrm = sqrt(1.0 / nrm);
+    for(int j=0;j<n;j++){ nrm += norm(X.M[j]); }
+    nrm = sqrt(1.0/nrm);
 
     // Normalize solution vector
-    for (j = 0; j < n; j++) {
-      Evec.M[j * n + i] = nrm * X.M[j];
-    }
+    for(int j=0;j<n;j++){ Evec.M[j*n+i] = nrm*X.M[j]; }
 
   }  //for i
 }
@@ -1258,8 +1151,8 @@ void matrix::tridiagonalize(matrix& T) {
 
   n = n_rows;  // = n_cols
 
-  matrix w(n, 1);
-  matrix v(n, 1);
+  matrix w(n,1);
+  matrix v(n,1);
 
   for (i = 0; i < n_elts; i++) {
     T.M[i] = M[i];
@@ -1279,7 +1172,10 @@ void matrix::tridiagonalize(matrix& T) {
       alp = (T.M[(i + 1) * n + i] / abs(T.M[(i + 1) * n + i]));
     }
 
-    w.M[i + 1] = T.M[(i + 1) * n + i] - alp * nrm;
+    if(abs(T.M[(i+1)*n+i])==0.0){ alp = complex<double>(1.0,0.0); }
+    else{ alp = (T.M[(i+1)*n+i] / abs(T.M[(i+1)*n+i])) ; }
+
+    w.M[i+1] = T.M[(i+1)*n+i] - alp*nrm;
 
     nrm = (std::conj(w.M[i + 1]) * w.M[i + 1]).real();  // norm of new vector x-y
     for (j = i + 2; j < n; j++) {
@@ -1289,9 +1185,7 @@ void matrix::tridiagonalize(matrix& T) {
     nrm = sqrt(nrm);
 
     // Normalize new vector (w)
-    for (j = i + 1; j < n; j++) {
-      w.M[j] = w.M[j] / nrm;
-    }
+    for(j=i+1;j<n;j++){ w.M[j] = w.M[j] / nrm; }
 
     // The following commented lines are only for mathematical and historical reason
     // Finally, projector
@@ -1302,9 +1196,10 @@ void matrix::tridiagonalize(matrix& T) {
 
     // Let's optimize it:
     v = T * w;
-    T = (T - 2.0 * w * (v.H()) - 2.0 * v * (w.H()) + 4.0 * (w.H() * v).M[0] * w * (w.H()));
+    T =  (T - 2.0*w*(v.H()) - 2.0*v*(w.H()) + 4.0*(w.H()*v).M[0]*w*(w.H()) );
 
-  }  // for i - transformation index
+
+  }// for i - transformation index
 }
 
 void matrix::tridiagonalize(matrix& T, matrix& H) {
@@ -1335,8 +1230,10 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
   matrix tmp2(n, n);
   matrix P(n, n);
   H.load_identity();
-  matrix w(n, 1);
-  matrix v(n, 1);
+  matrix w(n,1);
+  matrix v(n,1);
+
+  for(i=0;i<n_elts;i++){ T.M[i] = M[i]; }
 
   for (i = 0; i < n_elts; i++) {
     T.M[i] = M[i];
@@ -1356,7 +1253,10 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
       alp = (T.M[(i + 1) * n + i] / abs(T.M[(i + 1) * n + i]));
     }
 
-    w.M[i + 1] = T.M[(i + 1) * n + i] - alp * nrm;
+    if(abs(T.M[(i+1)*n+i])==0.0){ alp = complex<double>(1.0,0.0); }
+    else{ alp = (T.M[(i+1)*n+i] / abs(T.M[(i+1)*n+i])) ; }
+
+    w.M[i+1] = T.M[(i+1)*n+i] - alp*nrm;
 
     nrm = (std::conj(w.M[i + 1]) * w.M[i + 1]).real();  // norm of new vector x-y
     for (j = i + 2; j < n; j++) {
@@ -1366,9 +1266,7 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
     nrm = sqrt(nrm);
 
     // Normalize new vector (w)
-    for (j = i + 1; j < n; j++) {
-      w.M[j] = w.M[j] / nrm;
-    }
+    for(j=i+1;j<n;j++){ w.M[j] = w.M[j] / nrm; }
 
     // The following commented lines are only for mathematical and historical reason
     // Finally, projector
@@ -1379,7 +1277,7 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
 
     // Let's optimize it:
     v = T * w;
-    P = w * (w.H());
+    P = w*(w.H());
 
     //  The following 2 lines are what we actually doing:
     T = (T - 2.0 * w * (v.H()) - 2.0 * v * (w.H()) + 4.0 * (w.H() * v).M[0] * P);
@@ -1387,7 +1285,7 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
     P += I;
     H = H * P;
 
-  }  // for i - transformation index
+  }// for i - transformation index
 }
 
 matrix exp(matrix& m1, complex<double> scl, double eps) {
@@ -1409,6 +1307,7 @@ matrix exp(matrix& m1, complex<double> scl, double eps) {
   //evec.direct_inverse(eps,inv_evec);  inv_evec = evec.H()
   return (evec * eval * evec.H());
 }
+
 
 matrix sin(matrix& m1, complex<double> scl, double eps) {
   /****************************************************************************
@@ -1470,14 +1369,15 @@ matrix pow(matrix& m1, double nn, double eps) {
   return (evec * eval * evec.H());
 }
 
-void matrix::inverse(double EPS, matrix& INV, int opt) {
-  if (opt == 1) {
-    direct_inverse(EPS, INV);
-  }                     // this is much faster way - works fine for ~n = 350 and more
-  else if (opt == 2) {  // actually this is slower version - works only up ~n = 100
-    matrix I(n_rows, n_cols);
-    I.load_identity();
-    solve_linsys(*this, I, INV, EPS, 10000, 1.4);  // CX = D, so if D = I => X = C^-1
+
+
+
+void matrix::inverse(double EPS,matrix& INV,int opt){
+
+  if(opt==1){ direct_inverse(EPS,INV); }  // this is much faster way - works fine for ~n = 350 and more
+  else if(opt==2){                        // actually this is slower version - works only up ~n = 100
+    matrix I(n_rows,n_cols); I.load_identity();
+    solve_linsys(*this, I, INV, EPS, 10000, 1.4); // CX = D, so if D = I => X = C^-1
   }
 }
 
@@ -1495,83 +1395,71 @@ void matrix::direct_inverse(double EPS, matrix& INV) {
     R_time[k] = M[k];
   }
 
-  k = 0;
-  for (int i = 0; i < num_of_cols; i++) {
-    for (int j = 0; j < num_of_cols; j++) {
-      if (i == j) {
-        L_time[k] = complex<double>(1.0, 0.0);
-      } else {
-        L_time[k] = complex<double>(0.0, 0.0);
-      }
+  int k=0;
+  for(int i=0;i<num_of_cols;i++){
+    for(int j=0;j<num_of_cols;j++){
+      if(i==j) {L_time[k]=complex<double>(1.0,0.0);}
+      else     {L_time[k]=complex<double>(0.0,0.0);}
       k++;
     }  // for j
   }    // for i
 
   complex<double> alpha;
-  for (int row1 = 0; row1 < num_of_rows - 1; row1++) {
-    if (abs(R_time[row1 * num_of_cols + row1]) <= zero) {
-      int row = row1 + 1;
-      while (abs(R_time[row * num_of_cols + row1]) <= zero) {
-        row++;
-      }
-      complex<double> temp1, temp2;
-      for (int col = 0; col < num_of_cols; col++) {
-        temp1 = R_time[row1 * num_of_cols + col];
-        R_time[row1 * num_of_cols + col] = R_time[row * num_of_cols + col];
-        R_time[row * num_of_cols + col] = temp1;
+  for(int row1=0;row1<num_of_rows-1;row1++){
+    if(abs(R_time[row1*num_of_cols+row1])<=zero){
+      int row=row1+1;
+      while(abs(R_time[row*num_of_cols+row1])<=zero){ row++;}
+      complex<double> temp1,temp2;
+      for(int col=0;col<num_of_cols;col++){
+        temp1=R_time[row1*num_of_cols+col];
+        R_time[row1*num_of_cols+col]=R_time[row*num_of_cols+col];
+        R_time[row*num_of_cols+col]=temp1;
 
-        temp2 = L_time[row1 * num_of_cols + col];
-        L_time[row1 * num_of_cols + col] = L_time[row * num_of_cols + col];
-        L_time[row * num_of_cols + col] = temp2;
-      }  // for col
-    }    // if
+        temp2=L_time[row1*num_of_cols+col];
+        L_time[row1*num_of_cols+col]=L_time[row*num_of_cols+col];
+        L_time[row*num_of_cols+col]=temp2;
+      }// for col
+    }// if
 
-    if (abs(R_time[row1 * num_of_cols + row1]) > zero) {
-      for (int row2 = row1 + 1; row2 < num_of_rows; row2++) {
-        if (abs(R_time[row2 * num_of_cols + row1]) > zero) {
-          alpha = -R_time[row2 * num_of_cols + row1] / R_time[row1 * num_of_cols + row1];
+    if(abs(R_time[row1*num_of_cols+row1])>zero){
+      for(int row2=row1+1;row2<num_of_rows;row2++){
+        if(abs(R_time[row2*num_of_cols+row1])>zero){
+          alpha=-R_time[row2*num_of_cols+row1]/R_time[row1*num_of_cols+row1];
 
-          for (int col = 0; col < num_of_cols; col++) {
-            R_time[row2 * num_of_cols + col] =
-                R_time[row2 * num_of_cols + col] + alpha * R_time[row1 * num_of_cols + col];
-            L_time[row2 * num_of_cols + col] =
-                L_time[row2 * num_of_cols + col] + alpha * L_time[row1 * num_of_cols + col];
-          }  // for col
-        }    // if !=0
-        else
-          continue;
-      }  // for row2
-    }    // if !=0
-  }      // for row1
+          for(int col=0;col<num_of_cols;col++){
+            R_time[row2*num_of_cols+col]=R_time[row2*num_of_cols+col]+alpha*R_time[row1*num_of_cols+col];
+            L_time[row2*num_of_cols+col]=L_time[row2*num_of_cols+col]+alpha*L_time[row1*num_of_cols+col];
+          }// for col
+        }// if !=0
+        else continue;
+      }// for row2
+    }// if !=0
+  }// for row1
 
-  for (row1 = num_of_rows - 1; row1 > 0; row1--) {
-    alpha = R_time[row1 * num_of_cols + row1];
-    R_time[row1 * num_of_cols + row1] = complex<double>(1.0, 0.0);
+  for(int row1=num_of_rows-1;row1>0;row1--){
+    alpha=R_time[row1*num_of_cols+row1];
+    R_time[row1*num_of_cols+row1]=complex<double>(1.0,0.0);
 
-    for (int col = (num_of_cols - 1); col >= 0; col--) {
-      L_time[row1 * num_of_cols + col] = L_time[row1 * num_of_cols + col] / alpha;
-    }  // for col
-    for (int row2 = row1 - 1; row2 >= 0; row2--) {
-      alpha = -R_time[row2 * num_of_cols + row1];
-      for (int col = (num_of_cols - 1); col >= 0; col--) {
-        R_time[row2 * num_of_cols + col] =
-            R_time[row2 * num_of_cols + col] + alpha * R_time[row1 * num_of_cols + col];
-        L_time[row2 * num_of_cols + col] =
-            L_time[row2 * num_of_cols + col] + alpha * L_time[row1 * num_of_cols + col];
-      }  // for col
-    }    // for row2
-  }      // for row1
+    for(int col=(num_of_cols-1);col>=0;col--){
+      L_time[row1*num_of_cols+col]=L_time[row1*num_of_cols+col]/alpha;
+    }// for col
+    for(int row2=row1-1;row2>=0;row2--){
+      alpha=-R_time[row2*num_of_cols+row1];
+      for(int col=(num_of_cols-1);col>=0;col--){
+        R_time[row2*num_of_cols+col]=R_time[row2*num_of_cols+col]+alpha*R_time[row1*num_of_cols+col];
+        L_time[row2*num_of_cols+col]=L_time[row2*num_of_cols+col]+alpha*L_time[row1*num_of_cols+col];
+      }// for col
+    }// for row2
+  }// for row1
 
-  alpha = R_time[0];
-  R_time[0] = complex<double>(1.0, 0.0);
-  for (int col = (num_of_cols - 1); col >= 0; col--) {
-    L_time[col] = L_time[col] / alpha;
-  }
+  alpha=R_time[0];
+  R_time[0]=complex<double>(1.0,0.0);
+  for(int col=(num_of_cols-1);col>=0;col--){   L_time[col]=L_time[col]/alpha;  }
 
-  k = 0;
-  for (int row = 0; row < num_of_rows; row++) {
-    for (int col = 0; col < num_of_cols; col++) {
-      INV.M[row * num_of_cols + col] = L_time[k];
+  k=0;
+  for(int row=0;row<num_of_rows;row++){
+    for(int col=0;col<num_of_cols;col++){
+      INV.M[row*num_of_cols+col] = L_time[k];
       k++;
     }
   }
@@ -1605,42 +1493,36 @@ void solve_linsys(matrix& C, matrix& D, matrix& X, double eps, int maxiter, doub
 
 **********************************************/
 
-  // Do the transformations A = C^H * C and b = C^H * d
-  // If matrices d and c have more then 1 columns we do the
-  // procedure for each column
+// Do the transformations A = C^H * C and b = C^H * d
+// If matrices d and c have more then 1 columns we do the
+// procedure for each column
 
-  int i, j, k;        // counters
-  int n, m, p;        // dimetions
-  complex<double> s;  // sums
-  double error;       // error
-  int iter;           // number of iterations
 
-  if (C.n_rows != D.n_rows) {
-    std::cout << "Error: The number of rows of matrices C and D in equation CX = D must be equal\n";
-    exit(35);
-  }  // n
-  if (C.n_cols != X.n_rows) {
-    std::cout << "Error: The number of cols of matrix C and num of rows in matrix D in equation CX "
-                 "= D must be equal\n";
-    exit(35);
-  }  // m
-  if (X.n_cols != D.n_cols) {
-    std::cout << "Error: The number of cols of matrices X and D in equation CX = D must be equal\n";
-    exit(35);
-  }  // p
+    int i,j,k;   // counters
+    int n,m,p;   // dimetions
+    complex<double> s;    // sums
+    double error;// error
+    int iter;    // number of iterations
 
-  // Set dimentions
-  n = C.n_rows;
-  m = C.n_cols;
-  p = D.n_cols;  // this is just 1 in most of the cases
+    if(C.n_rows!=D.n_rows)
+        {std::cout<<"Error: The number of rows of matrices C and D in equation CX = D must be equal\n"; exit(35); } // n
+    if(C.n_cols!=X.n_rows)
+        {std::cout<<"Error: The number of cols of matrix C and num of rows in matrix D in equation CX = D must be equal\n"; exit(35); } // m
+    if(X.n_cols!=D.n_cols)
+        {std::cout<<"Error: The number of cols of matrices X and D in equation CX = D must be equal\n"; exit(35); } // p
 
-  matrix A(m, m);
-  A = C.H() * C;
-  eps = eps * eps;
-  error = 2.0 * eps;
-  iter = 0;
+    // Set dimentions
+    n = C.n_rows;
+    m = C.n_cols;
+    p = D.n_cols;  // this is just 1 in most of the cases
 
-  while ((error > eps) && (iter < maxiter)) {
+    matrix A(m,m); A = C.H() * C;
+    eps = eps*eps;
+    error = 2.0*eps;
+    iter = 0;
+
+    while((error>eps)&&(iter<maxiter)){
+
     error = 0.0;
 
     for (k = 0; k < p; k++) {
@@ -1678,7 +1560,7 @@ void solve_linsys(matrix& C, matrix& D, matrix& X, double eps, int maxiter, doub
 
       }  // for i - all elements of vector x
 
-      //-------- Now calculate the error and update X ---------
+            X.M[i*p + k] = omega*x.M[i] + (1.0-omega)*X.M[i*p + k];
 
       for (i = 0; i < m; i++) {
         error += ((std::conj(x.M[i * p + k] - xprev.M[i * p + k])) *
@@ -1705,7 +1587,7 @@ void solve_linsys1(matrix& C, matrix& X, double eps, int maxiter, double omega) 
 
  omega - is a convergence parameter:
  x^(n+1) = omega * z^(n+1) + (1-omega)*x^n, where:
- 
+
  z^(n+1) - is a normal Gauss-Seidel iterate (that is omega = 1)
 
  Here we solve the system of linear equations
@@ -1730,45 +1612,43 @@ void solve_linsys1(matrix& C, matrix& X, double eps, int maxiter, double omega) 
 
 **********************************************/
 
-  // Do the transformations A = C^H * C and b = C^H * d
-  // If matrices d and c have more then 1 columns we do the
-  // procedure for each column
+// Do the transformations A = C^H * C and b = C^H * d
+// If matrices d and c have more then 1 columns we do the
+// procedure for each column
 
-  int i, j, k;        // counters
-  int n, m, p;        // dimetions
-  complex<double> s;  // sums
-  complex<double> diff;
-  double error;  // error
-  int iter;      // number of iterations
 
-  if (C.n_cols != X.n_rows) {
-    std::cout << "Error: The number of cols of matrix C and num of rows in matrix D in equation CX "
-                 "= D must be equal\n";
-    exit(35);
-  }  // m
-  if (X.n_cols != 1) {
-    std::cout << "Error: The number of cols of matrices X and D in equation CX = D must be equal\n";
-    exit(35);
-  }  // p
+    int i,j,k;   // counters
+    int n,m,p;   // dimetions
+    complex<double> s;    // sums
+    complex<double> diff;
+    double error;// error
+    int iter;    // number of iterations
 
-  // Set dimentions
-  n = C.n_rows;
-  m = C.n_cols;
-  p = 1;  // this is just 1 in most of the cases
+    if(C.n_cols!=X.n_rows)
+        {std::cout<<"Error: The number of cols of matrix C and num of rows in matrix D in equation CX = D must be equal\n"; exit(35); } // m
+    if(X.n_cols!=1)
+        {std::cout<<"Error: The number of cols of matrices X and D in equation CX = D must be equal\n"; exit(35); } // p
 
-  matrix d(n, 1);
-  matrix x(m, 1);
-  matrix xprev(m, 1);
+    // Set dimentions
+    n = C.n_rows;
+    m = C.n_cols;
+    p = 1;  // this is just 1 in most of the cases
 
-  matrix A(m, m);
-  A = C.H() * C;
-  eps = eps * eps;
-  error = 2.0 * eps;
-  iter = 0;
+    matrix d(n,1);
+    matrix x(m,1);
+    matrix xprev(m,1);
 
-  int im;  // i*m
 
-  while ((error > eps) && (iter < maxiter)) {
+    matrix A(m,m); A = C.H() * C;
+    eps = eps*eps;
+    error = 2.0*eps;
+    iter = 0;
+
+    int im; // i*m
+
+
+    while((error>eps)&&(iter<maxiter)){
+
     error = 0.0;
 
     for (k = 0; k < p; k++) {
@@ -1865,9 +1745,8 @@ void inv_dft(matrix& in, matrix& out) {
     }  // for j
   }    // for i
 
-  arg = 1.0 / ((double)N);
+  arg = 1.0/((double)N);
 
-  for (k = 0; k < N; k++) {
-    out.M[k] *= arg;
-  }
+  for(int k=0;k<N;k++){ out.M[k] *= arg; }
+
 }

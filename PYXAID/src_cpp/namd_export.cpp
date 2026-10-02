@@ -19,18 +19,22 @@
 #include "aux.h"
 #include "io.h"
 #include "namd.h"
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>    / switch from old pythonboost to pybind
+//using namespace boost::python;
 using namespace std;
 
-int namd(boost::python::dict inp_params) {
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>  // conversione automatica vector, map, ecc.
+namespace py = pybind11;
+
+int namd(py::dict inp_params) {
   time_t t1 = clock();
   complex<double> ihbar(0.0, hbar);
 
   //>>>>>>>>>>>>>>>>>>>>>>>> INITIALIZATION PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   // General input parameters from the python dictionary
-  InputStructure params(inp_params);
+  InputStructure params(inp_params);  // Note: InputStructure.cpp dovrà accettare py::dict
 
   // Define ME basis
   vector<me_state> me_states;
@@ -224,7 +228,7 @@ int namd(boost::python::dict inp_params) {
   //>>>>>>>>>>>>>>>>>>>>>>>>> MAIN PROGRAM PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   cout << "Starting the program...\n";
-  for (icond = 0; icond < iconds.size(); icond++) {  // first_icond may start from 0, not 1
+  for (int icond = 0; icond < iconds.size(); icond++) {  // first_icond may start from 0, not 1
 
     if (params.debug_flag == 2) {
       cout << "Initial condition index = " << icond << "     initial_time[" << icond
@@ -399,21 +403,26 @@ int namd(boost::python::dict inp_params) {
         cout << "Hij_prime_x  = " << Hij_prime_x << endl;
         cout << "Hij_prime_y  = " << Hij_prime_y << endl;
         cout << "Hij_prime_z  = " << Hij_prime_z << endl;
-      }
 
-      //Set up properties of the ElectronicStructure objects:
-      //------------------ Common data ----------------------------
+        if (t == 0 && params.debug_flag == 1) {
+          cout << "Hij_prime_x  = " << Hij_prime_x << endl;
+          cout << "Hij_prime_y  = " << Hij_prime_y << endl;
+          cout << "Hij_prime_z  = " << Hij_prime_z << endl;
+        }
 
-      *oe_es[t].Hcurr = 0.0;
-      *oe_es[t].Hprimex = 0.0;
-      *oe_es[t].Hprimey = 0.0;
-      *oe_es[t].Hprimez = 0.0;
+        //Set up properties of the ElectronicStructure objects:
+        //------------------ Common data ----------------------------
 
-      for (int k1 = 0; k1 < numstates; k1++) {
-        for (int k2 = 0; k2 < numstates; k2++) {
-          /**************************************
+        *oe_es[t].Hcurr = 0.0;
+        *oe_es[t].Hprimex = 0.0;
+        *oe_es[t].Hprimey = 0.0;
+        *oe_es[t].Hprimez = 0.0;
+
+        for (int k1 = 0; k1 < numstates; k1++) {
+          for (int k2 = 0; k2 < numstates; k2++) {
+            /**************************************
               Setting block matrix:
-  
+
                         i_alp            i_bet
                    __________________________________
             j_alp  | .d[2*k1][2*k2]   .d[2*k1][2*k2+1]
@@ -421,140 +430,140 @@ int namd(boost::python::dict inp_params) {
             j_bet  |.d[2*k1+1][2*k2]  .d[2*k1+1][2*k2+1]
 
              **************************************/
-          //Couplings: dij = <i|d/dt|j>
-          oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2] = Hij.M[k1 * numstates + k2];
-          oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
-              Hij.M[k1 * numstates + k2];
+            //Couplings: dij = <i|d/dt|j>
+            oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2] = Hij.M[k1 * numstates + k2];
+            oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
+                Hij.M[k1 * numstates + k2];
 
-          //Perturbations
-          oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2] =
-              Hij_prime_x.M[k1 * numstates + k2];
-          oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
-              Hij_prime_x.M[k1 * numstates + k2];
+            //Perturbations
+            oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2] =
+                Hij_prime_x.M[k1 * numstates + k2];
+            oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
+                Hij_prime_x.M[k1 * numstates + k2];
 
-          oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2] =
-              Hij_prime_y.M[k1 * numstates + k2];
-          oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
-              Hij_prime_y.M[k1 * numstates + k2];
+            oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2] =
+                Hij_prime_y.M[k1 * numstates + k2];
+            oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
+                Hij_prime_y.M[k1 * numstates + k2];
 
-          oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2] =
-              Hij_prime_z.M[k1 * numstates + k2];
-          oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
-              Hij_prime_z.M[k1 * numstates + k2];
+            oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2] =
+                Hij_prime_z.M[k1 * numstates + k2];
+            oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2 + 1] =
+                Hij_prime_z.M[k1 * numstates + k2];
 
-          if (params.alp_bet ==
-              0) {  // Electrons with a spin, no coupling between alp and bet, default
+            if (params.alp_bet ==
+                0) {  // Electrons with a spin, no coupling between alp and bet, default
 
-            oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
+              oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
 
-            oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
+              oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
 
-            oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
+              oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
 
-            oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
+              oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] = 0.0;
 
-          } else if (params.alp_bet ==
-                     1) {  // Spinless electrons, coupling between alp and bet is !=0, based only
-                           // on spatial part of the wavefunctions
-            oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
-                    Hij.M[k1 * numstates + k2];
+            } else if (params.alp_bet ==
+                       1) {  // Spinless electrons, coupling between alp and bet is !=0, based only
+                             // on spatial part of the wavefunctions
+              oe_es[t].Hcurr->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hcurr->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
+                      Hij.M[k1 * numstates + k2];
 
-            oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
-                    Hij_prime_x.M[k1 * numstates + k2];
+              oe_es[t].Hprimex->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimex->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
+                      Hij_prime_x.M[k1 * numstates + k2];
 
-            oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
-                    Hij_prime_y.M[k1 * numstates + k2];
+              oe_es[t].Hprimey->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimey->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
+                      Hij_prime_y.M[k1 * numstates + k2];
 
-            oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
-                oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
-                    Hij_prime_z.M[k1 * numstates + k2];
-          }
-        }  // for k2
-      }    // for k1
-           //      }// if namd
-
-      //      cout<<"*(oe_es[t].Hcurr) = "<<*(oe_es[t].Hcurr)<<endl;
-    }  // namdtime loop - duration of run  - finishes at time init_time[icond]+namdtime
-
-    cout << "One-electron data are set\n";
-
-    //------------------ Not common data ---------------------------
-    me_es[0].set_state(iconds[icond][1]);  // Coefficients and populations
-
-    //======================== Compute multi-electron Hamiltonians ==========================
-    //-------------------- Couplings -----------------------------------------
-    // Now we consider all multi-electron states
-    for (j = iconds[icond][0]; j < iconds[icond][0] + params.namdtime; j++) {
-      int t = (j - iconds[icond][0]);  // Time
-      int I, J;
-
-      *me_es[t].Hcurr = 0.0;
-      *me_es[t].Hprimex = 0.0;
-      *me_es[t].Hprimey = 0.0;
-      *me_es[t].Hprimez = 0.0;
-
-      // Initialize Energies, NACs and Hprime
-      for (I = 0; I < me_es[t].num_states; I++) {
-        // This initialization already includes shift of 1-e orbitals and 2-particle corrections
-        me_es[t].Hcurr->M[I * me_es[t].num_states + I] = me_states[I].Exc + me_states[I].Eshift;
-
-        for (J = 0; J < me_es[t].num_states; J++) {
-          // off-diagonal elements - NAC
-          if (I != J) {
-            me_es[t].Hcurr->M[I * me_es[t].num_states + J] = 0.0;
-          }
-
-          // Perturbations
-          me_es[t].Hprimex->M[I * me_es[t].num_states + J] = 0.0;
-          me_es[t].Hprimey->M[I * me_es[t].num_states + J] = 0.0;
-          me_es[t].Hprimez->M[I * me_es[t].num_states + J] = 0.0;
-
-        }  // for J
-      }    // for I
-
-      // Compute many-electron properties from those of the 1-electron
-      for (I = 0; I < me_es[t].num_states; I++) {  // Numerate the me state on which we project.
-        // This multi-electron state J is defined by me_states[J]
-        for (J = 0; J < me_es[t].num_states; J++) {
-          // Practically there will be only one non-zero contribution, corresponding to
-          // the pair of different indexes, for which all other indexes are identical
-          // If there are 2 pairs of different indexes (one determinant is doubly-excited
-          // with respect to the other) - the corresponding contribution is zero
-
-          int orb_i, orb_j;
-          int delt = delta(me_states[I].actual_state, me_states[J].actual_state, orb_i, orb_j);
-          if (delt) {
-            // If we are here - then two configurations differ by not 1 occupied orbital
-            if (t == 0 && params.debug_flag == 1) {
-              cout << "orb_i, orb_j = " << orb_i << "  " << orb_j << endl;
+              oe_es[t].Hprimez->M[(2 * k1 + 1) * (2 * numstates) + 2 * k2] =
+                  oe_es[t].Hprimez->M[2 * k1 * (2 * numstates) + 2 * k2 + 1] =
+                      Hij_prime_z.M[k1 * numstates + k2];
             }
-            // Convert external orbital indexes to internal orbital indexes
-            orb_i = ext2int(orb_i, me_states[I].active_space);
-            orb_j = ext2int(orb_j, me_states[J].active_space);
+          }  // for k2
+        }    // for k1
+             //      }// if namd
 
-            // In the statements below the += operator should be encountered only once over I, J double loop
-            // so initialization inside second loop is ok. Also += is effectively = operator.
-            // NAC and energy
-            me_es[t].Hcurr->M[I * me_es[t].num_states + J] +=
-                oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_j];
+        //      cout<<"*(oe_es[t].Hcurr) = "<<*(oe_es[t].Hcurr)<<endl;
+      }  // namdtime loop - duration of run  - finishes at time init_time[icond]+namdtime
 
-            // Perturbations - transition dipole moments
-            me_es[t].Hprimex->M[I * me_es[t].num_states + J] +=
-                oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_j];
-            me_es[t].Hprimey->M[I * me_es[t].num_states + J] +=
-                oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_j];
-            me_es[t].Hprimez->M[I * me_es[t].num_states + J] +=
-                oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_j];
+      cout << "One-electron data are set\n";
 
-          }  // if delt
-             /*
+      //------------------ Not common data ---------------------------
+      me_es[0].set_state(iconds[icond][1]);  // Coefficients and populations
+
+      //======================== Compute multi-electron Hamiltonians ==========================
+      //-------------------- Couplings -----------------------------------------
+      // Now we consider all multi-electron states
+      for (int j = iconds[icond][0]; j < iconds[icond][0] + params.namdtime; j++) {
+        int t = (j - iconds[icond][0]);  // Time
+        int I, J;
+
+        *me_es[t].Hcurr = 0.0;
+        *me_es[t].Hprimex = 0.0;
+        *me_es[t].Hprimey = 0.0;
+        *me_es[t].Hprimez = 0.0;
+
+        // Initialize Energies, NACs and Hprime
+        for (I = 0; I < me_es[t].num_states; I++) {
+          // This initialization already includes shift of 1-e orbitals and 2-particle corrections
+          me_es[t].Hcurr->M[I * me_es[t].num_states + I] = me_states[I].Exc + me_states[I].Eshift;
+
+          for (J = 0; J < me_es[t].num_states; J++) {
+            // off-diagonal elements - NAC
+            if (I != J) {
+              me_es[t].Hcurr->M[I * me_es[t].num_states + J] = 0.0;
+            }
+
+            // Perturbations
+            me_es[t].Hprimex->M[I * me_es[t].num_states + J] = 0.0;
+            me_es[t].Hprimey->M[I * me_es[t].num_states + J] = 0.0;
+            me_es[t].Hprimez->M[I * me_es[t].num_states + J] = 0.0;
+
+          }  // for J
+        }    // for I
+
+        // Compute many-electron properties from those of the 1-electron
+        for (I = 0; I < me_es[t].num_states; I++) {  // Numerate the me state on which we project.
+          // This multi-electron state J is defined by me_states[J]
+          for (J = 0; J < me_es[t].num_states; J++) {
+            // Practically there will be only one non-zero contribution, corresponding to
+            // the pair of different indexes, for which all other indexes are identical
+            // If there are 2 pairs of different indexes (one determinant is doubly-excited
+            // with respect to the other) - the corresponding contribution is zero
+
+            int orb_i, orb_j;
+            int delt = delta(me_states[I].actual_state, me_states[J].actual_state, orb_i, orb_j);
+            if (delt) {
+              // If we are here - then two configurations differ by not 1 occupied orbital
+              if (t == 0 && params.debug_flag == 1) {
+                cout << "orb_i, orb_j = " << orb_i << "  " << orb_j << endl;
+              }
+              // Convert external orbital indexes to internal orbital indexes
+              orb_i = ext2int(orb_i, me_states[I].active_space);
+              orb_j = ext2int(orb_j, me_states[J].active_space);
+
+              // In the statements below the += operator should be encountered only once over I, J double loop
+              // so initialization inside second loop is ok. Also += is effectively = operator.
+              // NAC and energy
+              me_es[t].Hcurr->M[I * me_es[t].num_states + J] +=
+                  oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_j];
+
+              // Perturbations - transition dipole moments
+              me_es[t].Hprimex->M[I * me_es[t].num_states + J] +=
+                  oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_j];
+              me_es[t].Hprimey->M[I * me_es[t].num_states + J] +=
+                  oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_j];
+              me_es[t].Hprimez->M[I * me_es[t].num_states + J] +=
+                  oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_j];
+
+            }  // if delt
+               /*
           if(t==0 &&  params.debug_flag==1){
             // Only for the first time step output info - to check what is the NAC structure of the system
             cout<<"I, J, delt, coupling(not scaled), orb_i, orb_j, Hprimex, Hprimey, Hprimez = "
@@ -567,107 +576,123 @@ int namd(boost::python::dict inp_params) {
                 <<endl;
           }
 */
-        }    // for J
+          }    // for J
 
-        // Now scale the coupling!!!
-        int sz_scl = me_states[I].nac_scl.size();
-        for (int k = 0; k < sz_scl; k++) {
-          J = me_states[I].nac_scl_indx[k];
-          me_es[t].Hcurr->M[I * me_es[t].num_states + J] *= me_states[I].nac_scl[k];
-        }  // for k
+          // Now scale the coupling!!!
+          int sz_scl = me_states[I].nac_scl.size();
+          for (int k = 0; k < sz_scl; k++) {
+            J = me_states[I].nac_scl_indx[k];
+            me_es[t].Hcurr->M[I * me_es[t].num_states + J] *= me_states[I].nac_scl[k];
+          }  // for k
 
-        // Compute the energy and the perturbation of the macrostate
-        for (int el = 0; el < num_elec; el++) {
-          int orb_i =
-              me_states[I]
-                  .actual_state[el];  // orbital on which el-th electron sits in current function
-          orb_i = ext2int(orb_i, me_states[I].active_space);  // internal index of the orbital
-          // Energy of I-th basis function (determinant) - contributions of all 1-electron KS orbitals - diagonal terms
-          me_es[t].Hcurr->M[I * me_es[t].num_states + I] +=
-              oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_i];
+          // Compute the energy and the perturbation of the macrostate
+          for (int el = 0; el < num_elec; el++) {
+            int orb_i =
+                me_states[I]
+                    .actual_state[el];  // orbital on which el-th electron sits in current function
+            orb_i = ext2int(orb_i, me_states[I].active_space);  // internal index of the orbital
+            // Energy of I-th basis function (determinant) - contributions of all 1-electron KS orbitals - diagonal terms
+            me_es[t].Hcurr->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_i];
 
-          if (params.debug_flag >= 1 && t == 0) {
-            cout << "I= " << I << " el= " << el << " orb_i= " << orb_i
-                 << " E_{KS,orb_i}= " << oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_i]
-                 << " E_{state,I}= " << me_es[t].Hcurr->M[I * me_es[t].num_states + I] << endl;
-          }
+            if (params.debug_flag >= 1 && t == 0) {
+              cout << "I= " << I << " el= " << el << " orb_i= " << orb_i
+                   << " E_{KS,orb_i}= " << oe_es[t].Hcurr->M[orb_i * oe_es[t].num_states + orb_i]
+                   << " E_{state,I}= " << me_es[t].Hcurr->M[I * me_es[t].num_states + I] << endl;
+            }
 
-          me_es[t].Hprimex->M[I * me_es[t].num_states + I] +=
-              oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_i];
-          me_es[t].Hprimey->M[I * me_es[t].num_states + I] +=
-              oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_i];
-          me_es[t].Hprimez->M[I * me_es[t].num_states + I] +=
-              oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_i];
+            me_es[t].Hprimex->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_i];
+            me_es[t].Hprimey->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_i];
+            me_es[t].Hprimez->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_i];
 
-        }  // for el
+            me_es[t].Hprimex->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_i];
+            me_es[t].Hprimey->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_i];
+            me_es[t].Hprimez->M[I * me_es[t].num_states + I] +=
+                oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_i];
 
-      }  // for I
+          }  // for el
 
-      for (I = 0; I < me_es[t].num_states; I++) {  // Numerate the me state on which we project.
-        // This multi-electron state J is defined by me_states[J]
-        for (J = 0; J < me_es[t].num_states; J++) {
-          if (t == 0 && params.debug_flag == 1) {
-            // Only for the first time step output info - to check what is the NAC structure of the system
-            cout << "I, J, coupling(scaled), Hprimex, Hprimey, Hprimez = " << I << "  " << J << "  "
-                 << me_es[t].Hcurr->M[I * me_es[t].num_states + J] << "  "
-                 << me_es[t].Hprimex->M[I * me_es[t].num_states + J] << "  "
-                 << me_es[t].Hprimey->M[I * me_es[t].num_states + J] << "  "
-                 << me_es[t].Hprimez->M[I * me_es[t].num_states + J] << "  " << endl;
-          }
+        }  // for I
 
-        }  // for J
-      }    // for I
+        for (I = 0; I < me_es[t].num_states; I++) {  // Numerate the me state on which we project.
+          // This multi-electron state J is defined by me_states[J]
+          for (J = 0; J < me_es[t].num_states; J++) {
+            if (t == 0 && params.debug_flag == 1) {
+              // Only for the first time step output info - to check what is the NAC structure of the system
+              cout << "I, J, coupling(scaled), Hprimex, Hprimey, Hprimez = " << I << "  " << J
+                   << "  " << me_es[t].Hcurr->M[I * me_es[t].num_states + J] << "  "
+                   << me_es[t].Hprimex->M[I * me_es[t].num_states + J] << "  "
+                   << me_es[t].Hprimey->M[I * me_es[t].num_states + J] << "  "
+                   << me_es[t].Hprimez->M[I * me_es[t].num_states + J] << "  " << endl;
+            }
 
-      //------------------------------------------------------------------------
-      //      cout<<"me.Hcurr = "<<*(me_es[t].Hcurr)<<endl;
+          }  // for J
+        }    // for I
 
-    }  // for t = j - ...
-    cout << "Multi-electron couplings and energies are computed\n";
+        //------------------------------------------------------------------------
+        //      cout<<"me.Hcurr = "<<*(me_es[t].Hcurr)<<endl;
 
-    // Print the energies of multi-electron states
-    string outfile = (params.scratch_dir + "/me_energies" + int2string(icond));
-    cout << "The energies of basis  states (with respect to defined ground state) for the this "
-            "initial condition are written in file "
-         << outfile << "\n";
-    ofstream out;
-    out.open(outfile.c_str(), ios::out);
-    for (j = iconds[icond][0]; j < iconds[icond][0] + params.namdtime; j++) {
-      int t = (j - iconds[icond][0]);  // Time
-      out << "t= " << j << "  "
-          << "E[0]= " << me_es[t].Hcurr->M[0].real() << "  ";
-      for (int I = 0; I < me_es[t].num_states; I++) {
-        out << "E[" << I << "]-E[0]= "
-            << (me_es[t].Hcurr->M[I * me_es[t].num_states + I] - me_es[t].Hcurr->M[0]).real()
-            << "  ";
-      }  // for I
-      out << endl;
-    }  // for j
-    out.close();
+      }  // for t = j - ...
+      cout << "Multi-electron couplings and energies are computed\n";
 
-    //>>>>> Precompute decoherence rates
-    if (params.decoherence > 0) {
-      cout << "Starting decoherence rates calculation\n";
-      run_decoherence_rates(params, me_es, me_states, icond);
-    }
-    //>>>>> Run NA-MD
-    //    if(params.runtype=="namd" && params.decoherence==0){
-    //        cout<<"Starting na-md simulations\n";
-    //        run_namd(params,me_es,me_states,icond);
-    //    }
-    //    if(params.runtype=="namd" && params.decoherence>0){
-    cout << "Starting na-md simulations with (optional) decoherence\n";
-    run_namd1(params, me_es, me_states, icond);
-    //    }
+      // Print the energies of multi-electron states
+      string outfile = (params.scratch_dir + "/me_energies" + int2string(icond));
+      cout << "The energies of basis  states (with respect to defined ground state) for the this "
+              "initial condition are written in file "
+           << outfile << "\n";
+      ofstream out;
+      out.open(outfile.c_str(), ios::out);
+      for (int j = iconds[icond][0]; j < iconds[icond][0] + params.namdtime; j++) {
+        int t = (j - iconds[icond][0]);  // Time
+        out << "t= " << j << "  "
+            << "E[0]= " << me_es[t].Hcurr->M[0].real() << "  ";
+        for (int I = 0; I < me_es[t].num_states; I++) {
+          out << "E[" << I << "]-E[0]= "
+              << (me_es[t].Hcurr->M[I * me_es[t].num_states + I] - me_es[t].Hcurr->M[0]).real()
+              << "  ";
+        }  // for I
+        out << endl;
+      }  // for j
+      out.close();
 
-    oe_es.clear();
-    me_es.clear();
+      //>>>>> Precompute decoherence rates
+      if (params.decoherence > 0) {
+        cout << "Starting decoherence rates calculation\n";
+        run_decoherence_rates(params, me_es, me_states, icond);
+      }
+      //>>>>> Run NA-MD
+      //    if(params.runtype=="namd" && params.decoherence==0){
+      //        cout<<"Starting na-md simulations\n";
+      //        run_namd(params,me_es,me_states,icond);
+      //    }
+      //    if(params.runtype=="namd" && params.decoherence>0){
+      cout << "Starting na-md simulations with (optional) decoherence\n";
+      run_namd1(params, me_es, me_states, icond);
+      //    }
 
-  }  // icond loop - from which time to start
+      oe_es.clear();
+      me_es.clear();
 
-  time_t t2 = clock();
-  cout << "Time in namd is: " << (t2 - t1) / ((double)CLOCKS_PER_SEC) << endl;
+    }  // icond loop - from which time to start
 
-  return 0;
+    time_t t2 = clock();
+    cout << "Time in namd is: " << (t2 - t1) / ((double)CLOCKS_PER_SEC) << endl;
+
+    return 0;
+  }
 }
 
-void export_namd() { def("namd", &namd); }
+/*void export_namd(){  #old
+  def("namd",&namd);
+
+  }*/
+
+PYBIND11_MODULE(pyxaid_core, m) {
+  m.doc() = "PYXAID-custom: NAMD with pybind11";
+  m.def("namd", &namd, py::arg("inp_params"), "Run NA-MD simulation. inp_params is a Python dict.");
+}

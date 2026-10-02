@@ -69,12 +69,12 @@ int delta(vector<int>& A, vector<int>& B, int& a, int& b) {
 
   sz = _C.size();
 
-  int nexc = 0;  // Number of excitations between 2 states
-  for (i = 0; i < sz; i++) {
-    int n_in_a, n_in_b;
-    vector<int> tmpa, tmpb;
-    n_in_a = num_in_vector(_C[i], _A, tmpa);
-    n_in_b = num_in_vector(_C[i], _B, tmpb);
+  int nexc = 0; // Number of excitations between 2 states
+  for(int i=0;i<sz;i++){
+    int n_in_a,n_in_b;
+    vector<int> tmpa,tmpb;
+    n_in_a = num_in_vector(_C[i],_A,tmpa);
+    n_in_b = num_in_vector(_C[i],_B,tmpb);
     int d = n_in_a - n_in_b;
     if (d > 0) {
       nexc += d;
@@ -107,26 +107,23 @@ int me_state::calculate_Exc(vector<int>& Exc_i,
   int sz = Exc_val.size();  //
 
   // Calculate correction due to the presence of more than 1 electron on given orbital
-  for (int i = 0; i < Nel - 1; i++) {
-    for (int j = i + 1; j < Nel; j++) {
-      for (int n = 0; n < sz; n++) {
-        if (((abs(actual_state[i]) == Exc_i[n]) && (abs(actual_state[j]) == Exc_j[n])) ||
-            ((abs(actual_state[i]) == Exc_j[n]) && (abs(actual_state[j]) == Exc_i[n]))) {
-          Exc += Exc_val[n];
-        }
-      }  // for n
-    }    // for j
-  }      // for i
+  for(int i=0;i<Nel-1;i++){
+    for(int j=i+1;j<Nel;j++){
+      for(int n=0;n<sz;n++){
+        if(( (abs(actual_state[i])==Exc_i[n]) && (abs(actual_state[j])==Exc_j[n]) ) ||
+           ( (abs(actual_state[i])==Exc_j[n]) && (abs(actual_state[j])==Exc_i[n]) )
+          ){ Exc += Exc_val[n]; }
+      }// for n
+    }// for j
+  }// for i
 
   // Shift given (1-electron orbitals) - "Scissor" operator
   sz = shift_E.size();
-  for (i = 0; i < Nel; i++) {
-    for (int n = 0; n < sz; n++) {
-      if (abs(actual_state[i]) == shift_i[n]) {
-        Exc += shift_E[n];
-      }
-    }  // for n
-  }    // for i
+  for(int i=0;i<Nel;i++){
+    for(int n=0;n<sz;n++){
+      if( abs(actual_state[i])==shift_i[n] ){ Exc += shift_E[n]; }
+    }// for n
+  }// for i
 
   return 1;
 }
@@ -140,36 +137,36 @@ void me_state::show_state() {
   cout << endl;
 }
 
-int list2state(boost::python::list lst, vector<int>& active_space, me_state& ES) {
-  //        string   int list   double(optinal)
-  // lst = [  name,  [1,2,3],     Eshift   ]
+//int list2state(boost::python::list lst,vector<int>& active_space, me_state& ES){
+int list2state(py::list lst,vector<int>& active_space, me_state& ES){
+//        string   int list   double(optinal)
+// lst = [  name,  [1,2,3],     Eshift   ]
   int res = 1;
-  int sz = len(lst);
-  if (sz >= 2) {
+  //int sz = len(lst);
+  int sz = py::len(lst);
+  if(sz>=2){
     // Name - field 0
-    ES.name = extract<std::string>(lst[0]);
-
+    //ES.name = extract<std::string>(lst[0]);  OLD
+    ES.name = lst[0].cast<std::string>();
     // Actual state - field 1
-    boost::python::list lst1 = extract<boost::python::list>(lst[1]);
-    int sz1 = len(lst1);
+    //boost::python::list lst1 = extract<boost::python::list>(lst[1]);
+    py::list lst1 = lst[1].cast<py::list>();
+
+    //int sz1 = len(lst1);
+    int sz1 = py::len(lst1);
     vector<int> state;
-    for (int i = 0; i < sz1; i++) {
-      int val = extract<int>(lst1[i]);
-      if (is_in_vector(abs(val), active_space)) {
-        state.push_back(val);
-      } else {
-        res = 0;
-        break;
-      }
-    }  // for i
-    if (res) {
-      ES.set_me_state(active_space, state);
-    }
+    for(int i=0;i<sz1;i++){
+      //int val = extract<int>(lst1[i]);
+      int val = lst1[i].cast<int>();
+      if(is_in_vector(abs(val),active_space)){ state.push_back(val); }
+      else{ res = 0; break; }
+    }// for i
+    if(res){ ES.set_me_state(active_space,state); }
 
     // Eshift - field 2 (optional)
-    if (sz >= 3) {
-      ES.Eshift = extract<double>(lst[2]);
-    }
+    //if(sz>=3){ ES.Eshift = extract<double>(lst[2]); }
+    if(sz >= 3){ ES.Eshift = lst[2].cast<double>(); }
+
 
   } else {
     cout << "Format Error(in list2state): the state is given as a list of at least 2 entries:";
@@ -179,14 +176,17 @@ int list2state(boost::python::list lst, vector<int>& active_space, me_state& ES)
   return res;
 }
 
-void input_states(boost::python::dict params, vector<me_state>& states) {
-  // States are defined as a list in a dictionary with a key "states"
-  // For example:
-  // params["states"] = []
-  // params["states"].append(["GS",[12,-12,13,-13], 0.00])      # 0
-  //
-  // params["states"].append(["S1",[12,-12,-13,19],S1_corr])    # 1
-  // params["states"].append(["S1a",[-12,13,-13,19],S1_corr])   # 2
+
+//void input_states(boost::python::dict params,vector<me_state>& states){
+void input_states(py::dict params,vector<me_state>& states){
+// States are defined as a list in a dictionary with a key "states"
+// For example:
+// params["states"] = []
+// params["states"].append(["GS",[12,-12,13,-13], 0.00])      # 0
+//
+// params["states"].append(["S1",[12,-12,-13,19],S1_corr])    # 1
+// params["states"].append(["S1a",[-12,13,-13,19],S1_corr])   # 2
+
 
   int is_active_space, is_ground_state, is_excl_ground_state;
   is_active_space = is_ground_state = is_excl_ground_state = 0;  // Not yet defined
@@ -199,26 +199,29 @@ void input_states(boost::python::dict params, vector<me_state>& states) {
   vector<int> nac_scl_i, nac_scl_j;  // indexes of the macrostates
   vector<double> nac_scl;            // scaling constant for given pair of the macrostates
 
-  boost::python::list lkeys = params.keys();
+  //boost::python::list lkeys = params.keys();
 
   // First - look only for active space
-  for (int i = 0; i < len(lkeys); i++) {
-    std::string s1;
-    s1 = extract<std::string>(lkeys[i]);
+  //for(int i=0;i<len(lkeys);i++){ OLD
+  for(auto item : params){
+    //std::string s1;
+    //s1 = extract<std::string>(lkeys[i]);
+    std::string s1 = item.first.cast<std::string>();
 
-    if (s1 == "active_space") {
-      boost::python::list lst;
-      lst = extract<boost::python::list>(params[s1]);
-      for (int j = 0; j < len(lst); j++) {
-        int val = extract<int>(lst[j]);
-        active_space.push_back(val);
-      }
+    if(s1=="active_space"){
+      //boost::python::list lst; lst = extract<boost::python::list>(params[s1]);
+      py::list lst = item.second.cast<py::list>();
+      //for(int j=0;j<len(lst);j++){ int val = extract<int>(lst[j]); active_space.push_back(val);}
+      for(int j = 0; j < py::len(lst); j++){
+              active_space.push_back(lst[j].cast<int>());
+            }
       is_active_space = 1;
     }
   }  // for i
 
   // Now read the microstates and create corresponding determinants
-  for (i = 0; i < len(lkeys); i++) {
+
+  /*for(i=0;i<len(lkeys);i++){
     std::string s1;
     s1 = extract<std::string>(lkeys[i]);
 
@@ -226,32 +229,56 @@ void input_states(boost::python::dict params, vector<me_state>& states) {
       boost::python::list micro = extract<boost::python::list>(params[s1]);
       for (int j = 0; j < len(micro); j++) {
         boost::python::list tmp = extract<boost::python::list>(micro[j]);
-        if (list2state(tmp, active_space, ES)) {
-          states.push_back(ES);
+        if(list2state(tmp,active_space,ES)){ states.push_back(ES); }
+      }//for j
+    }// microstates
+  }// for i
+*/
+  for(auto item : params){
+      std::string s1 = item.first.cast<std::string>();
+      if(s1 == "states" && is_active_space){
+        py::list micro = item.second.cast<py::list>();
+        for(int j = 0; j < py::len(micro); j++){
+          py::list tmp = micro[j].cast<py::list>();
+          if(list2state(tmp, active_space, ES)){ states.push_back(ES); }
         }
-      }  //for j
-    }    // microstates
-  }      // for i
+      }
+    }
 
   // Read other orbital/determinant parameters
-  for (i = 0; i < len(lkeys); i++) {
+  /*for(i=0;i<len(lkeys);i++){
     std::string s1;
     s1 = extract<std::string>(lkeys[i]);
 
     if (s1 == "shift") {
       boost::python::list shifts = extract<boost::python::list>(params[s1]);
       int sz = len(shifts);
-      shift_i = vector<int>(sz, 0);
-      shift_E = vector<double>(sz, 0.0);
-      for (int j = 0; j < sz; j++) {
+      shift_i = vector<int>(sz,0);
+      shift_E = vector<double>(sz,0.0);
+      for(int j=0;j<sz;j++){
         boost::python::list tmp = extract<boost::python::list>(shifts[j]);
         shift_i[j] = extract<int>(tmp[0]);
         shift_E[j] = extract<double>(tmp[1]);
       }  // for j
     }
-  }  // for i
+  }// for i
+*/
+  for(auto item : params){
+      std::string s1 = item.first.cast<std::string>();
+      if(s1 == "shift"){
+        py::list shifts = item.second.cast<py::list>();
+        int sz = py::len(shifts);
+        shift_i = vector<int>(sz, 0);
+        shift_E = vector<double>(sz, 0.0);
+        for(int j = 0; j < sz; j++){
+          py::list tmp = shifts[j].cast<py::list>();
+          shift_i[j] = tmp[0].cast<int>();
+          shift_E[j] = tmp[1].cast<double>();
+        }
+      }
+    }
 
-  for (i = 0; i < len(lkeys); i++) {
+  /*for(i=0;i<len(lkeys);i++){
     std::string s1;
     s1 = extract<std::string>(lkeys[i]);
 
@@ -367,4 +394,106 @@ void input_iconds(boost::python::dict params, int me_numstates, vector<vector<in
       exit(0);
     }
   }
-}
+
+
+  }*/
+
+  for(auto item : params){
+      std::string s1 = item.first.cast<std::string>();
+      if(s1 == "Exc"){
+        py::list exc = item.second.cast<py::list>();
+        int sz = py::len(exc);
+        Exc_i = vector<int>(sz, 0);
+        Exc_j = vector<int>(sz, 0);
+        Exc   = vector<double>(sz, 0.0);
+        for(int j = 0; j < sz; j++){
+          py::list tmp = exc[j].cast<py::list>();
+          Exc_i[j] = tmp[0].cast<int>();
+          Exc_j[j] = tmp[1].cast<int>();
+          Exc[j]   = tmp[2].cast<double>();
+        }
+      }
+    }
+
+    // ── Passo 5: nac_scale ────────────────────────────────────────────────────
+    for(auto item : params){
+      std::string s1 = item.first.cast<std::string>();
+      if(s1 == "nac_scale"){
+        py::list nac = item.second.cast<py::list>();
+        int sz = py::len(nac);
+        nac_scl_i = vector<int>(sz, 0);
+        nac_scl_j = vector<int>(sz, 0);
+        nac_scl   = vector<double>(sz, 0.0);
+        for(int j = 0; j < sz; j++){
+          py::list tmp = nac[j].cast<py::list>();
+          nac_scl_i[j] = tmp[0].cast<int>();
+          nac_scl_j[j] = tmp[1].cast<int>();
+          nac_scl[j]   = tmp[2].cast<double>();
+        }
+      }
+    }
+
+    // ── Calcola correzioni Exc e scaling NAC (invariato) ─────────────────────
+    int sz = states.size();
+    for(int i = 0; i < sz; i++){
+      states[i].calculate_Exc(Exc_i, Exc_j, Exc, shift_i, shift_E);
+    }
+
+    cout<<"Number of basis multi-electron states is: "<<sz<<endl;
+    for(int i = 0; i < sz; i++){
+      cout<<"State "<<i<<" : "; states[i].show_state();
+      cout<<" Exc = "<<states[i].Exc<<endl;
+    }
+
+    int sz1 = nac_scl.size();
+    for(int i = 0; i < sz; i++){
+      for(int k = 0; k < sz1; k++){
+        if(nac_scl_i[k] == i){
+          if(!is_in_vector(nac_scl_j[k], states[i].nac_scl_indx)){
+            states[i].nac_scl_indx.push_back(nac_scl_j[k]);
+            states[i].nac_scl.push_back(nac_scl[k]);
+          }
+        }
+        else if(nac_scl_j[k] == i){
+          if(!is_in_vector(nac_scl_i[k], states[i].nac_scl_indx)){
+            states[i].nac_scl_indx.push_back(nac_scl_i[k]);
+            states[i].nac_scl.push_back(nac_scl[k]);
+          }
+        }
+      }
+    }
+
+    for(int i = 0; i < sz; i++){
+      cout<<"Couplings of the macrostate "<<i<<" will be scaled for the following states:\n";
+      for(int k = 0; k < (int)states[i].nac_scl.size(); k++){
+        cout<<"     "<<states[i].nac_scl_indx[k]<<"   "<<states[i].nac_scl[k]<<endl;
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  void input_iconds(py::dict params, int me_numstates, vector<vector<int>>& iconds){
+
+    for(auto item : params){
+      std::string keyi = item.first.cast<std::string>();
+      if(keyi == "iconds"){
+        py::list lst = item.second.cast<py::list>();
+        int sz = py::len(lst);
+        iconds = vector<vector<int>>(sz, vector<int>(2, 0));
+        for(int j = 0; j < sz; j++){
+          py::list lstj = lst[j].cast<py::list>();
+          iconds[j][0] = lstj[0].cast<int>();
+          iconds[j][1] = lstj[1].cast<int>();
+        }
+      }
+    }
+
+    for(int i = 0; i < (int)iconds.size(); i++){
+      if(iconds[i][1] < 0){
+        cout<<"Error: Minimal excitation state is 0\n"; exit(0);
+      }
+      if(iconds[i][1] > me_numstates){
+        cout<<"Error: The initial excitation state must be in range [0,"<<me_numstates<<")\n"; exit(0);
+      }
+    }
+  }

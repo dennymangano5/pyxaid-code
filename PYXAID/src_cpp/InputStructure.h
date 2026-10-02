@@ -11,8 +11,13 @@
 #define InputStructure_H
 
 #include <string>
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>
+//using namespace boost::python;
+
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+
+
 using namespace std;
 
 class InputStructure {
@@ -95,25 +100,20 @@ public:
   int is_regress_mode;  // regression mode used during dephasing times calculations
 
   // Electromagnetic field
-  int is_field;
-  int is_is_field;  // flag to include explicit field
-  std::string field_dir;
-  int is_field_dir;  // direction of the field
-  int field_protocol;
-  int is_field_protocol;  // way the photoexcitation is prepared
-  double field_Tm;
-  int is_field_Tm;  // middle of the excitation period
-  double field_T;
-  int is_field_T;  // excitation period (e.g. duration of the laser pulse)
-  double field_freq;
-  int is_field_freq;  // field frequency
-  std::string field_freq_units;
-  int is_field_freq_units;  // units of the excitation frequency
-  double field_fluence;
-  int is_field_fluence;  // fluence of the field in mJ/cm^2
+  int is_field;             int is_is_field;       // flag to include explicit field
+  std::string field_dir;    int is_field_dir;      // direction of the field
+  int field_protocol;       int is_field_protocol; // way the photoexcitation is prepared
+  double field_Tm;          int is_field_Tm;       // middle of the excitation period
+  double field_T;           int is_field_T;        // excitation period (e.g. duration of the laser pulse)
+  double field_freq;        int is_field_freq;     // field frequency
+  std::string field_freq_units; int is_field_freq_units; // units of the excitation frequency
+  double field_fluence;     int is_field_fluence;  // fluence of the field in mJ/cm^2
+
 
   // Constructor
-  InputStructure(boost::python::dict);
+  //InputStructure(boost::python::dict); #old
+  InputStructure(py::dict params);
+
 };
 
 #endif  // InputStructure_H
