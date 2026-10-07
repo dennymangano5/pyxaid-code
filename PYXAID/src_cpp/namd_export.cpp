@@ -229,7 +229,8 @@ int namd(py::dict inp_params) {
 
   cout << "Starting the program...\n";
   for (int icond = 0; icond < iconds.size(); icond++) {  // first_icond may start from 0, not 1
-
+    // debug
+    cout << "Initial condition: "<< icond << "\n" ;
     if (params.debug_flag == 2) {
       cout << "Initial condition index = " << icond << "     initial_time[" << icond
            << "]=" << iconds[icond][0] << " initial_me_state[" << icond << "]=" << iconds[icond][1]
@@ -404,11 +405,7 @@ int namd(py::dict inp_params) {
         cout << "Hij_prime_y  = " << Hij_prime_y << endl;
         cout << "Hij_prime_z  = " << Hij_prime_z << endl;
 
-        if (t == 0 && params.debug_flag == 1) {
-          cout << "Hij_prime_x  = " << Hij_prime_x << endl;
-          cout << "Hij_prime_y  = " << Hij_prime_y << endl;
-          cout << "Hij_prime_z  = " << Hij_prime_z << endl;
-        }
+      }
 
         //Set up properties of the ElectronicStructure objects:
         //------------------ Common data ----------------------------
@@ -487,7 +484,6 @@ int namd(py::dict inp_params) {
             }
           }  // for k2
         }    // for k1
-             //      }// if namd
 
         //      cout<<"*(oe_es[t].Hcurr) = "<<*(oe_es[t].Hcurr)<<endl;
       }  // namdtime loop - duration of run  - finishes at time init_time[icond]+namdtime
@@ -677,20 +673,17 @@ int namd(py::dict inp_params) {
 
       oe_es.clear();
       me_es.clear();
-
+      cout << "end icond " << icond ;
     }  // icond loop - from which time to start
 
     time_t t2 = clock();
     cout << "Time in namd is: " << (t2 - t1) / ((double)CLOCKS_PER_SEC) << endl;
 
     return 0;
-  }
+
 }
 
-/*void export_namd(){  #old
-  def("namd",&namd);
 
-  }*/
 
 PYBIND11_MODULE(pyxaid_core, m) {
   m.doc() = "PYXAID-custom: NAMD with pybind11";

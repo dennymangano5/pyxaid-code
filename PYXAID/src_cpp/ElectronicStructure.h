@@ -54,14 +54,13 @@ public:
   vector<double> g;  // num_states x num_states matrix, reshaped in 1D array
 
   // DISH variables:
-  vector<double> tau_m; // times since last decoherence even for all PES (actually rates, that is inverse times)
-  vector<double> t_m;   // time counters for each PES
-
-
+  vector<double>
+      tau_m;  // times since last decoherence even for all PES (actually rates, that is inverse times)
+  vector<double> t_m;  // time counters for each PES
 
   //========== Methods ================
   // Constructors
-  ElectronicStructure(int n){
+  ElectronicStructure(int n) {
     num_states = n;
 
     complex<double> tmp(0.0, 0.0);
@@ -109,14 +108,14 @@ public:
     Cprev = new matrix(n, 1);
     Cnext = new matrix(n, 1);
 
-    g = std::vector<double>(n*n,0.0);  // g[i*n+j] ~=g[i][j] - probability of i->j transition
+    g = std::vector<double>(n * n, 0.0);  // g[i*n+j] ~=g[i][j] - probability of i->j transition
 
-    A = new matrix(n,n);
+    A = new matrix(n, n);
 
-    Hcurr = new matrix(n,n);
-    Hprev = new matrix(n,n);
-    Hnext = new matrix(n,n);
-    dHdt  = new matrix(n,n);
+    Hcurr = new matrix(n, n);
+    Hprev = new matrix(n, n);
+    Hnext = new matrix(n, n);
+    dHdt = new matrix(n, n);
 
     Hcurr = new matrix(n, n);
     Hprev = new matrix(n, n);
@@ -145,32 +144,68 @@ public:
   }
   // Destructor
 
-  ~ElectronicStructure(){
-    if(g.size()>0) {g.clear();}
-    if(Ccurr!=NULL) { delete Ccurr;}// Ccurr = NULL;}
-    if(Cprev!=NULL) {delete Cprev;}// Cprev = NULL;}
-    if(Cnext!=NULL) {delete Cnext;}// Cnext = NULL;}
-    if(A!=NULL) { delete A;} // A = NULL;}
-    if(Hcurr!=NULL){ delete Hcurr;} // Hcurr = NULL;}
-    if(Hprev!=NULL){ delete Hprev;}// Hprev = NULL;}
-    if(Hnext!=NULL){ delete Hnext;}// Hnext = NULL;}
-    if(dHdt!=NULL){ delete dHdt;} // dHdt = NULL;}
-    if(Hprimex!=NULL){ delete Hprimex; }
-    if(Hprimey!=NULL){ delete Hprimey; }
-    if(Hprimez!=NULL){ delete Hprimez; }
-    if(tau_m.size()>0){ tau_m.clear(); }
-    if(t_m.size()>0){ t_m.clear(); }
+  ~ElectronicStructure() {
+    if (g.size() > 0) {
+      g.clear();
+    }
+    if (Ccurr != NULL) {
+      delete Ccurr;
+    }  // Ccurr = NULL;}
+    if (Cprev != NULL) {
+      delete Cprev;
+    }  // Cprev = NULL;}
+    if (Cnext != NULL) {
+      delete Cnext;
+    }  // Cnext = NULL;}
+    if (A != NULL) {
+      delete A;
+    }  // A = NULL;}
+    if (Hcurr != NULL) {
+      delete Hcurr;
+    }  // Hcurr = NULL;}
+    if (Hprev != NULL) {
+      delete Hprev;
+    }  // Hprev = NULL;}
+    if (Hnext != NULL) {
+      delete Hnext;
+    }  // Hnext = NULL;}
+    if (dHdt != NULL) {
+      delete dHdt;
+    }  // dHdt = NULL;}
+    if (Hprimex != NULL) {
+      delete Hprimex;
+    }
+    if (Hprimey != NULL) {
+      delete Hprimey;
+    }
+    if (Hprimez != NULL) {
+      delete Hprimez;
+    }
+    if (tau_m.size() > 0) {
+      tau_m.clear();
+    }
+    if (t_m.size() > 0) {
+      t_m.clear();
+    }
   }
 
   ElectronicStructure operator=(ElectronicStructure es) {
     num_states = es.num_states;
     curr_state = es.curr_state;
-   *Ccurr = *es.Ccurr; *Cprev = *es.Cprev; *Cnext = *es.Cnext;
-    g = es.g;  *A = *es.A;
-    *Hcurr = *es.Hcurr;  *Hprev = *es.Hprev; *Hnext = *es.Hnext;
-    *Hprimex = *es.Hprimex; *Hprimey = *es.Hprimey; *Hprimez = *es.Hprimez;
-    *dHdt  = *es.dHdt;
-    tau_m = es.tau_m;  t_m = es.t_m;
+    *Ccurr = *es.Ccurr;
+    *Cprev = *es.Cprev;
+    *Cnext = *es.Cnext;
+    g = es.g;
+    *A = *es.A;
+    *Hcurr = *es.Hcurr;
+    *Hprev = *es.Hprev;
+    *Hnext = *es.Hnext;
+    *Hprimex = *es.Hprimex;
+    *Hprimey = *es.Hprimey;
+    *Hprimez = *es.Hprimez;
+    *dHdt = *es.dHdt;
+    tau_m = es.tau_m;
+    t_m = es.t_m;
     return *this;
   }
 
@@ -191,8 +226,6 @@ public:
     return *this;
   }
 
-
-
   // Other methods
   void set_state(int indx) {
     for (int i = 0; i < num_states; i++) {
@@ -204,26 +237,31 @@ public:
     }
     curr_state = indx;
   }
-  double energy();                // calculate the total energy
-  double norm(); // calculate the norm of the wavefunction
+  double energy();  // calculate the total energy
+  double norm();    // calculate the norm of the wavefunction
 
-  void update_populations();      // update matrix A from Ccurr
-  void update_hop_prob(double dt,int is_boltz_flag,double Temp,matrix& Ef);
+  void update_populations();  // update matrix A from Ccurr
+  void update_hop_prob(double dt, int is_boltz_flag, double Temp, matrix& Ef);
 
-
-  void update_hop_prob_fssh(double dt,int is_boltz_flag,double Temp,matrix& Ef,double Ex, matrix&);
-  void update_hop_prob_mssh(double dt,int is_boltz_flag,double Temp,matrix& Ef,double Ex, matrix&);
-  void update_hop_prob_gfsh(double dt,int is_boltz_flag,double Temp,matrix& Ef,double Ex, matrix&);
+  void update_hop_prob_fssh(
+      double dt, int is_boltz_flag, double Temp, matrix& Ef, double Ex, matrix&);
+  void update_hop_prob_mssh(
+      double dt, int is_boltz_flag, double Temp, matrix& Ef, double Ex, matrix&);
+  void update_hop_prob_gfsh(
+      double dt, int is_boltz_flag, double Temp, matrix& Ef, double Ex, matrix&);
   void init_hop_prob1();
 
-  void check_decoherence(double dt,int boltz_flag,double Temp,matrix& rates); // practically DISH correction
+  void check_decoherence(double dt,
+                         int boltz_flag,
+                         double Temp,
+                         matrix& rates);  // practically DISH correction
 
-  void propagate_coefficients(double dt,matrix& Ef);  // Trotter factorization
-  void propagate_coefficients(double dt,matrix& Ef,matrix&);  // Trotter factorization with purostat
-  void propagate_coefficients1(double dt,int opt,matrix& Ef); // Finite difference
-  void propagate_coefficients2(double dt,matrix& Ef); // "Exact"
-
+  void propagate_coefficients(double dt, matrix& Ef);  // Trotter factorization
+  void propagate_coefficients(double dt,
+                              matrix& Ef,
+                              matrix&);  // Trotter factorization with purostat
+  void propagate_coefficients1(double dt, int opt, matrix& Ef);  // Finite difference
+  void propagate_coefficients2(double dt, matrix& Ef);           // "Exact"
 };
 
-
-#endif // ElectronicStructure_H
+#endif  // ElectronicStructure_H
