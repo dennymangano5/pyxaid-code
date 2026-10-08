@@ -694,7 +694,7 @@ void run_namd1(InputStructure& is,
   int i, j, n;
   std::string outfile1, outfile2;
   ofstream out1, out2;
-  int nel = is.nucl_dt / is.elec_dt;  // Number of electronic iterations per 1 nuclear
+  //int nel = is.nucl_dt / is.elec_dt;  // Number of electronic iterations per 1 nuclear. commented, already defined before
   int sz = me_es.size();              // Number of nuclear iterations (ionic steps)
   int nst = me_es[0].num_states;      // Number of electronic states
   int init_state = me_es[0].curr_state;
@@ -902,8 +902,8 @@ void run_namd1(InputStructure& is,
       std::string filename = is.scratch_dir + "/scaling_factors_icond" + int2string(icond) + ".txt";
       ofstream out(filename.c_str(), ios::out);
 
-      double maxx = sqrt(0.5);
-      double maxf = exp(-0.25) / pow(2.0 * M_PI, 0.25);
+      //double maxx = sqrt(0.5);
+      //double maxf = exp(-0.25) / pow(2.0 * M_PI, 0.25);
 
       for (int t = 0; t < sz; t++) {
         out << "t= " << t << "  ";
@@ -930,7 +930,7 @@ void run_namd1(InputStructure& is,
               double S = lambda_v / (hbar * omega_v);
               //    print "Huang-Rhys factor = ", S
 
-              double xi_v = hbar * omega_v / (2.0 * kT);
+              //double xi_v = hbar * omega_v / (2.0 * kT);
               //    print "xi_v = ", xi_v
 
               double prefac = 1.0 / sqrt(4.0 * M_PI * lambda_s * kT);

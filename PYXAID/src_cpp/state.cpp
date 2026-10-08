@@ -23,7 +23,7 @@ int ext2int(int external, vector<int>& active_space) {
   //          and finally not general scheme is applied
   //
   int internal;
-  for (int k = 0; k < active_space.size(); k++) {
+  for (auto k = 0u; k < active_space.size(); k++) {
     if (active_space[k] == abs(external)) {
       internal = k;
       break;
@@ -51,8 +51,8 @@ int delta(vector<int>& A, vector<int>& B, int& a, int& b) {
 
   int res = 1;
   int sz = A.size();
-  int nA = 0;                     // number of elements in A which do not exist in B
-  int nB = 0;                     // number of elements in B which do not exist in A
+  //int nA = 0;                     // number of elements in A which do not exist in B
+  //int nB = 0;                     // number of elements in B which do not exist in A
   vector<int> _A, _B, _C;         // modules of A and B and overlap C
   for (int i = 0; i < sz; i++) {  // the size of A and B is assumed to be the same
     int mA = (A[i]);
@@ -220,7 +220,7 @@ void input_states(py::dict params, vector<me_state>& states) {
       //boost::python::list lst; lst = extract<boost::python::list>(params[s1]);
       py::list lst = item.second.cast<py::list>();
       //for(int j=0;j<len(lst);j++){ int val = extract<int>(lst[j]); active_space.push_back(val);}
-      for (int j = 0; j < py::len(lst); j++) {
+      for (auto j = 0u; j < py::len(lst); j++) {
         active_space.push_back(lst[j].cast<int>());
       }
       is_active_space = 1;
@@ -246,7 +246,7 @@ void input_states(py::dict params, vector<me_state>& states) {
     std::string s1 = item.first.cast<std::string>();
     if (s1 == "states" && is_active_space) {
       py::list micro = item.second.cast<py::list>();
-      for (int j = 0; j < py::len(micro); j++) {
+      for (auto j = 0u; j < py::len(micro); j++) {
         py::list tmp = micro[j].cast<py::list>();
         if (list2state(tmp, active_space, ES)) {
           states.push_back(ES);

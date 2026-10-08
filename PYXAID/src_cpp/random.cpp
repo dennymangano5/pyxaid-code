@@ -39,7 +39,7 @@ void bin(
       out[n].second += 1.0;
     }
   }
-  for (int i = 0; i < out.size(); i++) {
+  for (auto i = 0u; i < out.size(); i++) {
     out[i].second /= (sz * dx);
   }
 }

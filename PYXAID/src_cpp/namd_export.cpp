@@ -80,7 +80,7 @@ int namd(py::dict inp_params) {
   //------------------- Batch mode preparations -----------------------
   // Find the maximal index of the input files (Hamiltonian), needed for the batch run
   int max_indx = 0;
-  for (int icond = 0; icond < iconds.size(); icond++) {
+  for (auto icond = 0u; icond < iconds.size(); icond++) {
     if (iconds[icond][0] >= max_indx) {
       max_indx = iconds[icond][0];
     }
@@ -135,8 +135,8 @@ int namd(py::dict inp_params) {
 
       //--------------------- Optionally preprocess matrices ----------------------------------------------
       if (params.read_couplings == "batch_all_in_one") {
-        for (int a = 0; a < Ham_re_crop.size(); a++) {
-          for (int b = 0; b < Ham_re_crop.size(); b++) {
+        for (auto a = 0u; a < Ham_re_crop.size(); a++) {
+          for (auto b = 0u; b < Ham_re_crop.size(); b++) {
             if (a == b) {
               Ham_im_crop[a][a] = 0.0;
             } else {
@@ -228,7 +228,7 @@ int namd(py::dict inp_params) {
   //>>>>>>>>>>>>>>>>>>>>>>>>> MAIN PROGRAM PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   cout << "Starting the program...\n";
-  for (int icond = 0; icond < iconds.size(); icond++) {  // first_icond may start from 0, not 1
+  for (auto icond = 0u; icond < iconds.size(); icond++) {  // first_icond may start from 0, not 1
     // debug
     cout << "Initial condition: "<< icond << "\n" ;
     if (params.debug_flag == 2) {
@@ -285,8 +285,8 @@ int namd(py::dict inp_params) {
 
         //--------------------- Optionally preprocess matrices ----------------------------------------------
         if (params.read_couplings == "online_all_in_one") {
-          for (int a = 0; a < Ham_re_crop.size(); a++) {
-            for (int b = 0; b < Ham_re_crop.size(); b++) {
+          for (auto a = 0u; a < Ham_re_crop.size(); a++) {
+            for (auto b = 0u; b < Ham_re_crop.size(); b++) {
               if (a == b) {
                 Ham_im_crop[a][a] = 0.0;
               } else {

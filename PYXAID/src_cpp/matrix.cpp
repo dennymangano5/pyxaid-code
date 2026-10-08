@@ -416,7 +416,7 @@ void matrix::eigen0(
 
   int n = n_rows;  // = n_cols
   int row, col, i, j, k, num_iter;
-  double val, phi, eps;
+  double eps;  // double val, phi;
 
   matrix V(n, n);
   matrix temp(n, n);
@@ -566,7 +566,7 @@ void matrix::QR(matrix& w, matrix& R) {
 
  M = Q * R, where Q - is a set of orthonormal vectors and R are the weights
 *****************************************************************************/
-  int row, col, i, j, k;
+  int i, j, k; // int row, col
   double nrm;           // norm
   complex<double> dot;  // dot product
   int n = n_rows;       // = n_cols
@@ -632,7 +632,7 @@ void matrix::QR1(matrix& w, matrix& R) {
 
  This version is designed for tridiagonal matrices
 *****************************************************************************/
-  int row, col, i, j, k;
+  int i, j, k; //row, col;
   double nrm;           // norm
   complex<double> dot;  // dot product
   int n = n_rows;       // = n_cols
@@ -869,8 +869,8 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
   // --------- Recursive QR iterations ------------
   // eval - is the input tridiagonal matrix
   // n - is a size of the problem
-  double mu, d, a1, b2;
-  int i1, i2;
+  double mu, d, a1; // double b2;
+  // int i1, i2;
   matrix Q(n, n);
   matrix R(n, n);
   matrix Q_tmp(n, n);
@@ -885,12 +885,12 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
   do {
     // Perhaps they mean - minimal diagonal value
     a1 = eval.M[0].real();
-    i1 = 0;
+    //i1 = 0;
     for (int i = 1; i < n; i++) {
       d = eval.M[i * n + i].real();
       if (d < a1) {
         a1 = d;
-        i1 = i;
+        //i1 = i;
       }
     }
 
@@ -1259,7 +1259,7 @@ void matrix::tridiagonalize(matrix& T) {
 
   This algorithm scales as O(N^3)
 *****************************************************************************/
-  int i, j, k, n;
+  int i, j, n;  //k,
   double nrm;
   complex<double> alp;
 
@@ -1336,7 +1336,7 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
 
   This algorithm scales as O(N^3)
 *****************************************************************************/
-  int i, j, k, n;
+  int i, j, n; //k;
   double nrm;
   complex<double> alp;
 
