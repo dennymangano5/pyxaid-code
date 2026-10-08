@@ -325,7 +325,7 @@ void matrix::load_identity() {
   for (int i = 0; i < n_elts; i++) {
     M[i] = complex<double>(0.0, 0.0);
   }
-  for (i = 0; i < n_rows; i++) {
+  for (int i = 0; i < n_rows; i++) {
     M[i * n_cols + i] = complex<double>(1.0, 0.0);
   }
 }
@@ -377,7 +377,7 @@ void matrix::inverse(matrix& inv,double EPS,int max_num_iter,int is_cycle,int al
     for(int i=0;i<n_rows;i++){ einv.M[i*n_cols+i] = 1.0/eval.M[i*n_cols+i]; }
 
     inv = evec*einv*(evec.T());
-  }  
+  }
   else{ cout<<"Warning: in matrix::inverse - matrix is not square\n"; }
 }
 */
@@ -437,6 +437,9 @@ void matrix::eigen0(
     }
   }
 */
+
+  row = 0;
+  col = 1;
 
   row = 0;
   col = 1;
@@ -583,6 +586,8 @@ void matrix::QR(matrix& w, matrix& R) {
 
         dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
 
+        dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
+
         for (j = 0; j < n; j++) {
           w.M[j * n + k] = w.M[j * n + k] - dot * w.M[j * n + (i - 1)];
         }
@@ -645,6 +650,8 @@ void matrix::QR1(matrix& w, matrix& R) {
         for (j = 0; j <= min((i + 2), (n - 1)); j++) {
           dot += (std::conj(w.M[j * n + k]) * w.M[j * n + (i - 1)]);
         }
+
+        dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
 
         dot = std::conj(dot);  // This is very tricky part!!!  - arises in case of complex matrixes
 
@@ -714,7 +721,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
       //eval.M[i*n+i] += mu;
     }
     // Fill out upper diagonal
-    for (i = 0; i < n - 1; i++) {
+    for (int i = 0; i < n - 1; i++) {
       // j = i+1
       if (i == n - 2) {
         eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
@@ -734,7 +741,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
     // m has a tridiagonal form, so judge convergence by the elements in
     // the closest off-diagonal
     stop = 0;
-    for (i = 0; i < (n - 1); i++) {
+    for (int i = 0; i < (n - 1); i++) {
       if ((fabs(eval.M[i * n + (i + 1)].real()) < EPS) &&
           (fabs(eval.M[i * n + (i + 1)].imag()) < EPS)) {
         // Element (i, j=i+1) is  "zero"
@@ -752,11 +759,11 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
+          for (int j = i + 1; j < (n - 1); j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
+          for (int j = i + 2; j < n; j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
           }
 
@@ -764,7 +771,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
           qr(EPS, sz_dn, dn, Eval_tmp);
 
           Eval[0] = eval.M[0].real();
-          for (j = 1; j < n; j++) {
+          for (int j = 1; j < n; j++) {
             Eval[j] = Eval_tmp[j - 1];
           }
           Eval_tmp.clear();
@@ -779,18 +786,18 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
             up.M[j * sz_up + j] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = 0; j < (n - 2); j++) {
+          for (int j = 0; j < (n - 2); j++) {
             up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = 1; j < (n - 1); j++) {
+          for (int j = 1; j < (n - 1); j++) {
             up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
           }
 
           vector<double> Eval_tmp(sz_up, 0.0);
           qr(EPS, sz_up, up, Eval_tmp);
 
-          for (j = 0; j < (n - 1); j++) {
+          for (int j = 0; j < (n - 1); j++) {
             Eval[j] = Eval_tmp[j];
           }
           Eval[n - 1] = eval.M[(n - 1) * n + (n - 1)].real();
@@ -807,26 +814,26 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
+          for (int j = i + 1; j < (n - 1); j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
+          for (int j = i + 2; j < n; j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
           }
 
           matrix up(sz_up, sz_up);
           up = 0.0;
           // copy diagonal elements
-          for (j = 0; j < (i + 1); j++) {
+          for (int j = 0; j < (i + 1); j++) {
             up.M[j * sz_up + j] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = 0; j < i; j++) {
+          for (int j = 0; j < i; j++) {
             up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = 1; j < (i + 1); j++) {
+          for (int j = 1; j < (i + 1); j++) {
             up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
           }
 
@@ -836,10 +843,10 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval) {
           vector<double> Eval_tmp_dn(sz_dn, 0.0);
           qr(EPS, sz_dn, dn, Eval_tmp_dn);
 
-          for (j = 0; j < sz_up; j++) {
+          for (int j = 0; j < sz_up; j++) {
             Eval[j] = Eval_tmp_up[j];
           }
-          for (j = i + 1; j < n; j++) {
+          for (int j = i + 1; j < n; j++) {
             Eval[j] = Eval_tmp_dn[j - (i + 1)];
           }
 
@@ -915,7 +922,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
     // The following steps are basically the efficient way to do:
     // eval = R * Q
     // Fill out the main diagonal
-    for (i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
       if (i == n - 1) {
         eval.M[i * n + i] = R.M[i * n + i] * Q.M[i * n + i];
       }  // only 1 term here
@@ -927,7 +934,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
       eval.M[i * n + i] += mu;
     }
     // Fill out upper diagonal
-    for (i = 0; i < n - 1; i++) {
+    for (int i = 0; i < n - 1; i++) {
       // j = i+1
       if (i == n - 2) {
         eval.M[i * n + (i + 1)] = R.M[i * n + i] * Q.M[i * n + (i + 1)] +
@@ -947,7 +954,7 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
     // m has a tridiagonal form, so judge convergence by the elements in
     // the closest off-diagonal
     stop = 0;
-    for (i = 0; i < (n - 1); i++) {
+    for (int i = 0; i < (n - 1); i++) {
       if ((fabs(eval.M[i * n + (i + 1)].real()) < EPS) &&
           (fabs(eval.M[i * n + (i + 1)].imag()) < EPS)) {
         // Element (i, j=i+1) is  "zero"
@@ -965,11 +972,11 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
+          for (int j = i + 1; j < (n - 1); j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
+          for (int j = i + 2; j < n; j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
           }
 
@@ -977,14 +984,14 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
           matrix Q_dn(sz_dn, sz_dn);
           qr(EPS, sz_dn, dn, Eval_tmp, Q_dn);
 
-          for (j = i + 1; j < n; j++) {
+          for (int j = i + 1; j < n; j++) {
             for (int k = i + 1; k < n; k++) {
               Q_tmp.M[j * n + k] = Q_dn.M[(j - (i + 1)) * sz_dn + (k - (i + 1))];
             }
           }
 
           Eval[0] = eval.M[0].real();
-          for (j = 1; j < n; j++) {
+          for (int j = 1; j < n; j++) {
             Eval[j] = Eval_tmp[j - 1];
           }
           Eval_tmp.clear();
@@ -999,11 +1006,11 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
             up.M[j * sz_up + j] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = 0; j < (n - 2); j++) {
+          for (int j = 0; j < (n - 2); j++) {
             up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = 1; j < (n - 1); j++) {
+          for (int j = 1; j < (n - 1); j++) {
             up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
           }
 
@@ -1011,13 +1018,13 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
           matrix Q_up(sz_up, sz_up);
           qr(EPS, sz_up, up, Eval_tmp, Q_up);
 
-          for (j = 0; j < (i + 1); j++) {
+          for (int j = 0; j < (i + 1); j++) {
             for (int k = 0; k < (i + 1); k++) {
               Q_tmp.M[j * n + k] = Q_up.M[j * sz_up + k];
             }
           }
 
-          for (j = 0; j < (n - 1); j++) {
+          for (int j = 0; j < (n - 1); j++) {
             Eval[j] = Eval_tmp[j];
           }
           Eval[n - 1] = eval.M[(n - 1) * n + (n - 1)].real();
@@ -1034,26 +1041,26 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1))] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = i + 1; j < (n - 1); j++) {
+          for (int j = i + 1; j < (n - 1); j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = i + 2; j < n; j++) {
+          for (int j = i + 2; j < n; j++) {
             dn.M[(j - (i + 1)) * sz_dn + (j - (i + 1)) - 1] = eval.M[j * n + j - 1];
           }
 
           matrix up(sz_up, sz_up);
           up = 0.0;
           // copy diagonal elements
-          for (j = 0; j < (i + 1); j++) {
+          for (int j = 0; j < (i + 1); j++) {
             up.M[j * sz_up + j] = eval.M[j * n + j];
           }
           // upper off-diagonal elements
-          for (j = 0; j < i; j++) {
+          for (int j = 0; j < i; j++) {
             up.M[j * sz_up + j + 1] = eval.M[j * n + j + 1];
           }
           // lower off-diagonal elements
-          for (j = 1; j < (i + 1); j++) {
+          for (int j = 1; j < (i + 1); j++) {
             up.M[j * sz_up + j - 1] = eval.M[j * n + j - 1];
           }
 
@@ -1065,22 +1072,22 @@ void qr(double EPS, int n, matrix& eval, vector<double>& Eval, matrix& Evec) {
           matrix Q_dn(sz_dn, sz_dn);
           qr(EPS, sz_dn, dn, Eval_tmp_dn, Q_dn);
 
-          for (j = 0; j < (i + 1); j++) {
+          for (int j = 0; j < (i + 1); j++) {
             for (int k = 0; k < (i + 1); k++) {
               Q_tmp.M[j * n + k] = Q_up.M[j * sz_up + k];
             }
           }
 
-          for (j = i + 1; j < n; j++) {
+          for (int j = i + 1; j < n; j++) {
             for (int k = i + 1; k < n; k++) {
               Q_tmp.M[j * n + k] = Q_dn.M[(j - (i + 1)) * sz_dn + (k - (i + 1))];
             }
           }
 
-          for (j = 0; j < sz_up; j++) {
+          for (int j = 0; j < sz_up; j++) {
             Eval[j] = Eval_tmp_up[j];
           }
-          for (j = i + 1; j < n; j++) {
+          for (int j = i + 1; j < n; j++) {
             Eval[j] = Eval_tmp_dn[j - (i + 1)];
           }
 
@@ -1212,26 +1219,26 @@ void matrix::eigen3(double EPS, vector<double>& Eval, matrix& Evec) {
       m.M[j * n + j] -= Eval[i];
     }
     // Initial guess
-    for (j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) {
       X.M[j] = gs;
     }
 
     solve_linsys1(m, X, EPS, 10000, 1.4);  // ~1.4 is optimum
 
     // Restore original m
-    for (j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) {
       m.M[j * n + j] += Eval[i];
     }
 
     // Compute norm of the solution vector
     double nrm = 0.0;
-    for (j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) {
       nrm += norm(X.M[j]);
     }
     nrm = sqrt(1.0 / nrm);
 
     // Normalize solution vector
-    for (j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) {
       Evec.M[j * n + i] = nrm * X.M[j];
     }
 
@@ -1272,6 +1279,12 @@ void matrix::tridiagonalize(matrix& T) {
       nrm += (std::conj(T.M[j * n + i]) * T.M[j * n + i]).real();
     }
     nrm = sqrt(nrm);
+
+    if (abs(T.M[(i + 1) * n + i]) == 0.0) {
+      alp = complex<double>(1.0, 0.0);
+    } else {
+      alp = (T.M[(i + 1) * n + i] / abs(T.M[(i + 1) * n + i]));
+    }
 
     if (abs(T.M[(i + 1) * n + i]) == 0.0) {
       alp = complex<double>(1.0, 0.0);
@@ -1342,6 +1355,10 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
     T.M[i] = M[i];
   }
 
+  for (i = 0; i < n_elts; i++) {
+    T.M[i] = M[i];
+  }
+
   for (i = 0; i < (n - 2); i++) {
     w = 0.0;
     nrm = 0.0;
@@ -1349,6 +1366,12 @@ void matrix::tridiagonalize(matrix& T, matrix& H) {
       nrm += (std::conj(T.M[j * n + i]) * T.M[j * n + i]).real();
     }
     nrm = sqrt(nrm);
+
+    if (abs(T.M[(i + 1) * n + i]) == 0.0) {
+      alp = complex<double>(1.0, 0.0);
+    } else {
+      alp = (T.M[(i + 1) * n + i] / abs(T.M[(i + 1) * n + i]));
+    }
 
     if (abs(T.M[(i + 1) * n + i]) == 0.0) {
       alp = complex<double>(1.0, 0.0);
@@ -1495,7 +1518,7 @@ void matrix::direct_inverse(double EPS, matrix& INV) {
     R_time[k] = M[k];
   }
 
-  k = 0;
+  int k = 0;
   for (int i = 0; i < num_of_cols; i++) {
     for (int j = 0; j < num_of_cols; j++) {
       if (i == j) {
@@ -1544,7 +1567,7 @@ void matrix::direct_inverse(double EPS, matrix& INV) {
     }    // if !=0
   }      // for row1
 
-  for (row1 = num_of_rows - 1; row1 > 0; row1--) {
+  for (int row1 = num_of_rows - 1; row1 > 0; row1--) {
     alpha = R_time[row1 * num_of_cols + row1];
     R_time[row1 * num_of_cols + row1] = complex<double>(1.0, 0.0);
 
@@ -1678,7 +1701,7 @@ void solve_linsys(matrix& C, matrix& D, matrix& X, double eps, int maxiter, doub
 
       }  // for i - all elements of vector x
 
-      //-------- Now calculate the error and update X ---------
+      X.M[i * p + k] = omega * x.M[i] + (1.0 - omega) * X.M[i * p + k];
 
       for (i = 0; i < m; i++) {
         error += ((std::conj(x.M[i * p + k] - xprev.M[i * p + k])) *
@@ -1705,7 +1728,7 @@ void solve_linsys1(matrix& C, matrix& X, double eps, int maxiter, double omega) 
 
  omega - is a convergence parameter:
  x^(n+1) = omega * z^(n+1) + (1-omega)*x^n, where:
- 
+
  z^(n+1) - is a normal Gauss-Seidel iterate (that is omega = 1)
 
  Here we solve the system of linear equations
@@ -1867,7 +1890,7 @@ void inv_dft(matrix& in, matrix& out) {
 
   arg = 1.0 / ((double)N);
 
-  for (k = 0; k < N; k++) {
+  for (int k = 0; k < N; k++) {
     out.M[k] *= arg;
   }
 }

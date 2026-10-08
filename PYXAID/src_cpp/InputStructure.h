@@ -11,8 +11,12 @@
 #define InputStructure_H
 
 #include <string>
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>
+//using namespace boost::python;
+
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+
 using namespace std;
 
 class InputStructure {
@@ -113,7 +117,8 @@ public:
   int is_field_fluence;  // fluence of the field in mJ/cm^2
 
   // Constructor
-  InputStructure(boost::python::dict);
+  //InputStructure(boost::python::dict); #old
+  InputStructure(py::dict params);
 };
 
 #endif  // InputStructure_H

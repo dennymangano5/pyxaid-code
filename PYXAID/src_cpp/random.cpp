@@ -39,7 +39,7 @@ void bin(
       out[n].second += 1.0;
     }
   }
-  for (i = 0; i < out.size(); i++) {
+  for (int i = 0; i < out.size(); i++) {
     out[i].second /= (sz * dx);
   }
 }
@@ -250,23 +250,36 @@ double normal() {
       i = i + 1;
     } while (u <= 1.0);
 
-    u = u - 1.0;
-  id3:
-    w = u * d[i];
-    T = (0.5 * w + A) * w;
-    while (1) {
-      up = uniform(0.0, 1.0);
-      u = uniform(0.0, 1.0);
+    if (i == 0) {  // Tail
+      i = 6;
+      A = a[31];  // here I used 31 instead of 32 as in paper - this fixes the center-tail gap
+      do {
+        u = 2 * u;
+        A = A + d[i];
+        i = i + 1;
+      } while (u <= 1.0);
 
-      if (up >= T) {
-        break;
-      } else if (up <= u) {
+      u = u - 1.0;
+    id3:
+      w = u * d[i];
+      T = (0.5 * w + A) * w;
+      while (1) {
+        up = uniform(0.0, 1.0);
         u = uniform(0.0, 1.0);
-        goto id3;
-      } else {
-        T = u;
-      }
-    };
+
+        if (up >= T) {
+          break;
+        } else if (up <= u) {
+          u = uniform(0.0, 1.0);
+          goto id3;
+        } else {
+          T = u;
+        }
+      };
+
+      y = A + w;
+      res = s * y;
+    }
 
     y = A + w;
     res = s * y;

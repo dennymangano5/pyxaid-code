@@ -14,8 +14,8 @@
 #include "state.h"
 #include "units.h"
 #include "InputStructure.h"
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>
+//using namespace boost::python;
 using namespace std;
 
 class ElectronicStructure {
@@ -111,6 +111,11 @@ public:
     g = std::vector<double>(n * n, 0.0);  // g[i*n+j] ~=g[i][j] - probability of i->j transition
 
     A = new matrix(n, n);
+
+    Hcurr = new matrix(n, n);
+    Hprev = new matrix(n, n);
+    Hnext = new matrix(n, n);
+    dHdt = new matrix(n, n);
 
     Hcurr = new matrix(n, n);
     Hprev = new matrix(n, n);

@@ -17,8 +17,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <boost/python.hpp>
-using namespace boost::python;
+//#include <boost/python.hpp>
+//using namespace boost::python;
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>  // conversione automatica vector, map, ecc.
+namespace py = pybind11;
+
 using namespace std;
 
 int ext2int(int, vector<int>&);
@@ -70,7 +74,10 @@ public:
   void show_state();
 };
 
-void input_iconds(boost::python::dict params, int me_numstates, vector<vector<int> >& icond);
-void input_states(boost::python::dict params, vector<me_state>& states);
+//void input_iconds(boost::python::dict params,int me_numstates,vector<vector<int> >& icond); //OLD
+//void input_states(boost::python::dict params,vector<me_state>& states);   //OLD
+
+void input_iconds(py::dict params, int me_numstates, vector<vector<int> >& icond);
+void input_states(py::dict params, vector<me_state>& states);
 
 #endif  // state_h
