@@ -597,12 +597,6 @@ int namd(py::dict inp_params) {
                    << " E_{state,I}= " << me_es[t].Hcurr->M[I * me_es[t].num_states + I] << endl;
             }
 
-            me_es[t].Hprimex->M[I * me_es[t].num_states + I] +=
-                oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_i];
-            me_es[t].Hprimey->M[I * me_es[t].num_states + I] +=
-                oe_es[t].Hprimey->M[orb_i * oe_es[t].num_states + orb_i];
-            me_es[t].Hprimez->M[I * me_es[t].num_states + I] +=
-                oe_es[t].Hprimez->M[orb_i * oe_es[t].num_states + orb_i];
 
             me_es[t].Hprimex->M[I * me_es[t].num_states + I] +=
                 oe_es[t].Hprimex->M[orb_i * oe_es[t].num_states + orb_i];
