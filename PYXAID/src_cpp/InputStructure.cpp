@@ -25,19 +25,41 @@ void InputStructure::warning(std::string var, std::string default_value) {
 
 void InputStructure::init() {
   // Variables are not defined
-  is_read_couplings =
-      //  is_many_electron_algorithm =
-      is_namdtime = is_sh_algo = is_num_sh_traj = is_boltz_flag = is_debug_flag = is_Temp =
-          is_nucl_dt = is_elec_dt = is_integrator = is_runtype = is_Ham_re_prefix =
-              is_Ham_re_suffix = is_Ham_im_prefix = is_Ham_im_suffix = is_Hprime_x_prefix =
-                  is_Hprime_z_prefix = is_Hprime_z_prefix = is_Hprime_x_suffix =
-                      is_Hprime_z_suffix = is_Hprime_z_suffix =
-                          //  is_energy_prefix =
-      //  is_energy_suffix = is_nac_re_prefix = is_nac_re_suffix =
-      //  is_nac_im_prefix = is_nac_im_suffix =
-      is_energy_in_one_file = is_scratch_dir = is_energy_units = is_alp_bet = is_decoherence =
-          is_regress_mode = is_is_field = is_field_dir = is_field_protocol = is_field_Tm =
-              is_field_T = is_field_freq = is_field_freq_units = is_field_fluence = 0;
+  is_read_couplings = 0;
+  //  is_many_electron_algorithm =
+  is_namdtime = 0;
+  is_sh_algo = 0;
+  is_num_sh_traj = 0;
+  is_boltz_flag = 0;
+  is_debug_flag = 0;
+  is_Temp = 0;
+  is_nucl_dt = is_elec_dt = 0;
+  is_integrator = 0;
+  is_runtype = 0;
+  is_Ham_re_prefix =0;
+  is_Ham_re_suffix = 0;
+  is_Ham_im_prefix = 0;
+  is_Ham_im_suffix = 0;
+  is_Hprime_x_prefix = 0;
+  is_Hprime_y_prefix = 0;
+  is_Hprime_z_prefix = 0;
+  is_Hprime_x_suffix = 0;
+  is_Hprime_y_suffix = 0;
+  is_Hprime_z_suffix  = 0; //  is_energy_prefix =  //  is_energy_suffix = is_nac_re_prefix = is_nac_re_suffix = //  is_nac_im_prefix = is_nac_im_suffix =
+  is_energy_in_one_file = 0;
+  is_scratch_dir = 0;
+  is_energy_units = 0;
+  is_alp_bet = 0;
+  is_decoherence = 0;
+  is_regress_mode = 0;
+  is_is_field = 0;
+  is_field_dir = 0;
+  is_field_protocol = 0;
+  is_field_Tm = 0;
+  is_field_T = 0;
+  is_field_freq = 0;
+  is_field_freq_units = 0;
+  is_field_fluence = 0;
 }
 
 void InputStructure::echo() {

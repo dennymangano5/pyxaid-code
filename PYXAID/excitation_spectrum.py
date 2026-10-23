@@ -35,13 +35,13 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
     a = f.readline()
     f.close()
     sz = len(a.split())
-    print "Map size is %d by %d" % (sz,sz)
+    print("Map size is %d by %d",sz,sz) ## % (sz,sz)
 
     HOMO = HOMO - 1 # now it has the meaning of the index rather than id
 
     #========= Prepare storage ============
     M = []
-    i = 0 
+    i = 0
     while i<sz:
         m = []
         j = 0
@@ -63,11 +63,11 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
 
     #========== Read in data ==============
     count = 0.0
-   
+
     for k in range(isnap,fsnap+1):
         filename = dip_prefix + str(k) + dip_suffix
         e_filename = energy_prefix + str(k) + energy_suffix
-        print "Reading files ",filename, e_filename
+        print( "Reading files ",filename, e_filename)
 
         if(os.path.exists(filename) and os.path.exists(e_filename)):
 
@@ -77,9 +77,9 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
             f1.close()
 
             E = []
-            i = 0 
+            i = 0
             while i<sz:
-                tmp1 = A1[i].split()        
+                tmp1 = A1[i].split()
                 y = scl1*float(tmp1[i])
                 E.append(y)
                 i = i + 1
@@ -89,7 +89,7 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
             f = open(filename,"r")
             A = f.readlines()
             f.close()
-            i = 0 
+            i = 0
             while i<sz:
                 tmp = A[i].split()
                 j = 0
@@ -120,12 +120,12 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
 
                     j = j + 1
                 i = i-1
-            
+
 
 
     #========== Average and print out results ===============
     out = open(outfile,"w")
-    
+
     exI[0] = 0.0   # Do not print dipole moments
     i = 0
     while i<npt:
@@ -137,12 +137,12 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
         out.write("%f  %f \n" % (exE[i], exI[i]) )
 #        line = str(exE[i]) + "  "+str(exI[i]) + "\n"
 #        out.write(line)
-        i = i + 1        
+        i = i + 1
 
     out.close()
 
 
-          
+
     return [exE, exI]
 
 
@@ -174,11 +174,11 @@ def ham_map(prefix,isnap,fsnap,suffix,opt,scl,outfile):
     a = f.readline()
     f.close()
     sz = len(a.split())
-    print "Map size is %d by %d" % (sz,sz)
+    print("Map size is %d by %d" % (sz,sz))
 
     #========= Prepare storage ============
     M = []
-    i = 0 
+    i = 0
     while i<sz:
         m = []
         j = 0
@@ -190,10 +190,10 @@ def ham_map(prefix,isnap,fsnap,suffix,opt,scl,outfile):
 
     #========== Read in data ==============
     count = 0.0
-   
+
     for k in range(isnap,fsnap+1):
         filename = prefix + str(k) + suffix
-        print "Reading file ",filename
+        print("Reading file ",filename)
 
         if(os.path.exists(filename)):
 
@@ -201,7 +201,7 @@ def ham_map(prefix,isnap,fsnap,suffix,opt,scl,outfile):
             A = f.readlines()
             f.close()
 
-            i = 0 
+            i = 0
             while i<sz:
                 tmp = A[i].split()
                 j = 0
@@ -222,7 +222,7 @@ def ham_map(prefix,isnap,fsnap,suffix,opt,scl,outfile):
     #========== Average and print results ===============
     out = open(outfile,"w")
 
-    i = 0 
+    i = 0
     while i<sz:
         j = 0
         while j<sz:
@@ -230,17 +230,17 @@ def ham_map(prefix,isnap,fsnap,suffix,opt,scl,outfile):
             if(opt==0 or opt==1):
                 M[i][j] = scl * M[i][j] / count
             elif opt==2:
-                M[i][j] = scl * math.sqrt(M[i][j] / count ) 
+                M[i][j] = scl * math.sqrt(M[i][j] / count )
 
-            # ======= Print =======            
+            # ======= Print =======
             if(i==j):
                 M[i][j] = 0.0  # because diagonal and off-diagonal elements are of different orders of magnitude
             out.write("%d  %d  %f\n" % (i, j, M[i][j]))
-            j = j + 1        
+            j = j + 1
         out.write("\n")
         i = i + 1
-       
-    
+
+
     return 1
 
 
@@ -262,12 +262,12 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
     a = f.readline()
     f.close()
     sz = len(a.split())
-    print "Map size is %d by %d" % (sz,sz)
+    print("Map size is %d by %d" % (sz,sz))
 
     #========= Prepare storage ============
     M = []
     E = []
-    i = 0 
+    i = 0
     while i<sz:
         m = []
         j = 0
@@ -280,11 +280,11 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
 
     #========== Read in data ==============
     count = 0.0
-   
+
     for k in range(isnap,fsnap+1):
         filename = prefix + str(k) + suffix
         e_filename = energy_prefix + str(k) + energy_suffix
-        print "Reading files ",filename, e_filename
+        print( "Reading files ",filename, e_filename)
 
         if(os.path.exists(filename) and os.path.exists(e_filename)):
 
@@ -297,10 +297,10 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
             f1.close()
 
 
-            i = 0 
+            i = 0
             while i<sz:
                 tmp = A[i].split()
-                tmp1 = A1[i].split()        
+                tmp1 = A1[i].split()
                 y = float(tmp1[i])
                 j = 0
                 while j<sz:
@@ -327,7 +327,7 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
         E[i] = scl1 * E[i] / count
         i = i + 1
 
-    i = 0 
+    i = 0
     while i<sz:
         j = 0
         while j<sz:
@@ -337,16 +337,16 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
             elif opt==2:
                 M[i][j] = scl2 * math.sqrt(M[i][j] / count )
 
-            # ======= Print =======            
+            # ======= Print =======
             if(i==j):
                 M[i][j] = 0.0  # because diagonal and off-diagonal elements are of different orders of magnitude
             out.write("%f  %f  %f\n" % (E[i], E[j], M[i][j]))
-            j = j + 1        
+            j = j + 1
         out.write("\n")
         i = i + 1
 
-    out.close()       
-    
+    out.close()
+
     return 1
 
 
@@ -367,4 +367,3 @@ def ham_map1(energy_prefix,energy_suffix,prefix,isnap,fsnap,suffix,opt,scl1,scl2
 #ham_map1("res/0_Ham_","_re","res/0_Hprime_",0,6,"y_re",opt,scl1,scl2,"1ave_Hprime_y_re.dat")
 #ham_map1("res/0_Ham_","_re","res/0_Hprime_",0,6,"z_re",opt,scl1,scl2,"1ave_Hprime_z_re.dat")
 #
-

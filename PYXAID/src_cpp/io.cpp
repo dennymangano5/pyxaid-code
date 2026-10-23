@@ -149,8 +149,8 @@ void show_2D(vector<vector<double> >& in) {
   /******************************************************************
   This function prints out the matrix in a tabular form
 ******************************************************************/
-  for (int i = 0; i < in.size(); i++) {
-    for (int j = 0; j < in[i].size(); j++) {
+  for (auto i = 0u; i < in.size(); i++) {
+    for (auto j = 0u; j < in[i].size(); j++) {
       cout << "in[" << i << "][" << j << "]=" << in[i][j] << " ";
     }
     cout << endl;
