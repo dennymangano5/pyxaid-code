@@ -450,6 +450,7 @@ void ElectronicStructure::phase(complex<double> Hii, double dt, int i) {
 }
 
 void ElectronicStructure::propagate_coefficients(double dt, matrix& Ef) {
+  //cout << "Entering function propagate_coefficients(double dt, matrix& Ef)\n";
   int i, j;
   complex<double> Hprime;
 
@@ -483,6 +484,7 @@ void ElectronicStructure::propagate_coefficients(double dt, matrix& Ef) {
 }
 
 void ElectronicStructure::propagate_coefficients(double dt, matrix& Ef, matrix& rates) {
+  //cout << "Entering function propagate_coefficients(double dt, matrix& Ef, matrix& rates)\n";
   int i, j;
   complex<double> Hprime;
 

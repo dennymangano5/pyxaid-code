@@ -391,6 +391,7 @@ void propagate_electronic(InputStructure& is,
   if (is.integrator == 0) {
     for (int j = 0; j < nel; j++) {
       tim = (i * is.nucl_dt + j * is.elec_dt);
+      //cout << "i= " << i <<"j= "<< j<< "tim= "<< tim<<"\n" ;
       // Compute field
       Efield(is, tim, Ef, Eex);
 
