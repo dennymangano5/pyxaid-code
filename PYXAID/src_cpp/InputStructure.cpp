@@ -682,9 +682,14 @@ void InputStructure::sanity_check() {
       cout << "Exiting...\n";
       exit(0);
     }
-    if (decoherence > 0) {
+    /*if (decoherence > 0) { // original
       cout << "Error: Field is not yet implemented with decoherence\nExiting...\n";
       exit(0);
+      }*/
+    if (decoherence ==1) { // raise error with DISH. Nac rescaling e CPF (mean-field) compatibili con field
+        cout << "Error: Field is not yet implemented with decoherence\nExiting...\n";
+        exit(0);
+
     }
     if (is_field_dir) {
       if (field_dir == "x" || field_dir == "y" || field_dir == "z" || field_dir == "xy" ||
