@@ -117,11 +117,6 @@ public:
     Hnext = new matrix(n, n);
     dHdt = new matrix(n, n);
 
-    Hcurr = new matrix(n, n);
-    Hprev = new matrix(n, n);
-    Hnext = new matrix(n, n);
-    dHdt = new matrix(n, n);
-
     Hprimex = new matrix(n, n);
     Hprimey = new matrix(n, n);
     Hprimez = new matrix(n, n);
