@@ -26,44 +26,56 @@
   void run_namd1(InputStructure& is, vector<ElectronicStructure>& me_es,vector<me_state>& me_states, int icond)
 
 *****************************************************************/
-
-void hop(vector<double>& sh_prob, int& hopstate, int numstates) {
-  /***********************************************
- sh_prob[i] - is probability to hop from given state  to state i
- hopstate - will contain the state where we actually hopped
-************************************************/
+void hop(vector<double>& sh_prob, int& hopstate, int numstates) { // hop function rewritten
   int i;
   double left, right, ksi;
 
-  int in = hopstate;  // initial state
-  int hstate = -1;    // set to an absurd value, so that run fails explicitly if the
-                      // surface hopping probabilities are stange
+  int in = hopstate;
+  int hstate = -1;
+
   ksi = rand() / ((double)RAND_MAX);
 
-  // But, to avoid the problems, lets renormalize the hopping probabilities
+  // Renormalize
   double nrm = 0.0;
   for (i = 0; i < numstates; i++) {
     nrm += sh_prob[in * numstates + i];
   }
 
-  for (i = 0; i < numstates; i++) {
-    if (i == 0) {
-      left = 0.0;
-      right = (sh_prob[in * numstates + i] / nrm);
-    } else {
-      left = right;
-      right += (sh_prob[in * numstates + i] / nrm);
-    }
-    if ((left < ksi) && (ksi <= right)) {
-      hstate = i;
-    }
+  // Guard against zero norm (all probabilities are zero)
+  if (nrm < 1e-12) {
+    hopstate = in;  // stay in current state
+    return;
   }
-  hopstate = hstate;
 
+  right = 0.0;
+  for (i = 0; i < numstates; i++) {
+    left  = right;
+    right += sh_prob[in * numstates + i] / nrm;
+
+    // Use <= on both ends for first interval to catch ksi==0,
+    // and clamp the last interval to catch floating-point overshoot
+    if (i == numstates - 1) {
+      // Last interval: catch everything remaining (floating point drift)
+      if (ksi >= left) {
+        hstate = i;
+      }
+    } else {
+      if ((ksi >= left) && (ksi < right)) {
+        hstate = i;
+      }
+    }
+
+    if (hstate != -1) break;  // found, stop early
+  }
+
+  // Should never happen now, but keep as safety net
   if (hstate == -1) {
-    std::cout << "Something is wrong in hop(...) function\nExiting now...\n";
+    std::cout << "Something is wrong in hop(...) function\n"
+              << "ksi=" << ksi << " nrm=" << nrm << "\nExiting now...\n";
     exit(0);
   }
+
+  hopstate = hstate;
 }
 
 void regression(vector<double>& X, vector<double>& Y, int opt, double& a, double& b) {
