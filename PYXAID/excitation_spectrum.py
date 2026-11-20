@@ -101,6 +101,8 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
                         M[i][j] = math.fabs(x)
                     elif opt==2:
                         M[i][j] = x*x
+                    elif opt==3:
+                        M[i][j] = x*x
 
                     j = j + 1
                 i = i + 1
@@ -133,6 +135,9 @@ def calculate(energy_prefix,energy_suffix,dip_prefix,dip_suffix,isnap,fsnap,opt,
             exI[i] = scl2*exI[i] / count
         elif opt==2:
             exI[i] = scl2 * math.sqrt(exI[i]) / count
+        elif opt==3:
+            exI[i] = scl2 * exI[i] / count
+
 
         out.write("%f  %f \n" % (exE[i], exI[i]) )
 #        line = str(exE[i]) + "  "+str(exI[i]) + "\n"
