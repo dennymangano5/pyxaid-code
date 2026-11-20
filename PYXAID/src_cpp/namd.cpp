@@ -361,6 +361,12 @@ void Efield(InputStructure& is, double t, matrix& E, double& Eex) {
         Ampl = 0.01038 * lambda * sqrt(is.field_fluence / is.field_T);  //result is in eV*Bohr
       }                                                                 // protocol==1
       else if (is.field_protocol == 2) {
+        double denom = fabs(sin(2.0 * omega * is.field_Tm) - cos(2.0 * omega * is.field_Tm)); //added a check
+        if (denom < 1e-10) {
+            std::cerr << "ERROR: field_protocol=2 denominator ≈ 0 at Tm=" << is.field_Tm << " fs. Choose a different field_Tm.\n";
+            exit(1);
+        }
+
         Ampl =
             0.06857 * sqrt(is.field_fluence * lambda /
                            fabs(sin(2.0 * omega * is.field_Tm) - cos(2.0 * omega * is.field_Tm)));
@@ -376,8 +382,11 @@ void Efield(InputStructure& is, double t, matrix& E, double& Eex) {
     E.M[1] = iy * Em * Ampl * 2.0 * cos(omega * t);
     E.M[2] = iz * Em * Ampl * 2.0 * cos(omega * t);
 
-    if (((Tm - 0.5 * T) < t) && (t < (Tm + 0.5 * T))) {
-      Eex = hbar * omega;
+    //if (((Tm - 0.5 * T) < t) && (t < (Tm + 0.5 * T))) { OLD , failed if T and Tm not defined
+     // Eex = hbar * omega;
+     //}
+    if (Em > 0.0) {
+        Eex = hbar * omega;  //corrected version
     }
 
   }  // is.is_field==1
