@@ -1150,10 +1150,13 @@ void run_namd1(InputStructure& is,
 
       } // decoherence ==6
       else if (is.decoherence == 8) {
+        int st_before = me_es[i].curr_state;
         hop(me_es[i].g, me_es[i].curr_state, nst);
         curr_state = me_es[i].curr_state;
         // Collapse WFC
-        me_es[i].t_m[0] = 0.0;
+        if (st_before != curr_state) {
+                me_es[i].t_m[0] = 0.0;             // time since last hop reset for successful hops
+            }
 
         double argg = M_PI * uniform(-1.0, 1.0);
         *me_es[i].Ccurr = 0.0;
