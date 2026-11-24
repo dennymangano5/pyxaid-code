@@ -1069,7 +1069,9 @@ void run_namd1(InputStructure& is,
 
 */
     }                           // decoherence==7
-
+    if (is.decoherence == 8) {
+      // nothing special:  FSSH with wfc collapse at every hop attempt
+    } // decoherence==8
   }  // decoherence > 0
 
   // Because we will be propagating num_sh_traj independent trajectories at the same time, we will
@@ -1146,7 +1148,18 @@ void run_namd1(InputStructure& is,
           me_es[i].Ccurr->M[curr_state] = complex<double>(cos(argg), sin(argg));
         }
 
-      }  // is.decoherence==6
+      } // decoherence ==6
+      else if (is.decoherence == 8) {
+        hop(me_es[i].g, me_es[i].curr_state, nst);
+        curr_state = me_es[i].curr_state;
+        // Collapse WFC
+        me_es[i].t_m[0] = 0.0;
+
+        double argg = M_PI * uniform(-1.0, 1.0);
+        *me_es[i].Ccurr = 0.0;
+        me_es[i].Ccurr->M[curr_state] = complex<double>(cos(argg), sin(argg));
+
+      }  // is.decoherence==8
 
       /*  Debug
         cout<<"hop_matrix:\n";
